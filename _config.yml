@@ -13,7 +13,7 @@
 # Não transforma as páginas em template. Arquivo SEM front matter é copiado
 # VERBATIM pelo Jekyll — então `index.html`, as páginas de público, `privacidade.html`
 # e o livreto seguem byte-a-byte iguais ao fonte, e a doutrina de verificação do
-# playbook continua valendo:  diff <(curl -s https://www.corpflix.tv/index.html) index.html
+# playbook continua valendo:  diff <(curl -s https://www.corpflix.com.br/index.html) index.html
 # Se algum dia esse diff quebrar depois de mexer aqui, REVERTA este arquivo: o
 # plano B é mover `build.py`/`content.py` para `_livreto/` (o `_` também não é
 # publicado) em vez de excluir por nome.
@@ -22,7 +22,7 @@
 # não pelo jekyll-sitemap, que só age se não existir `sitemap.xml` no fonte e
 # usaria mtime do runner como lastmod.
 
-url: "https://www.corpflix.tv"
+url: "https://www.corpflix.com.br"
 
 exclude:
   # playbook e planejamento — documentação interna, não conteúdo público

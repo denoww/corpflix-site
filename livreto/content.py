@@ -42,7 +42,7 @@ from pathlib import Path
 
 WA = "https://wa.me/" + (Path(__file__).parent.parent / ".whatsapp").read_text().strip()
 WA_TXT = "?text=Ol%C3%A1!%20Vi%20o%20livreto%20do%20Corpflix%20e%20quero%20saber%20mais."
-SITE = "https://www.corpflix.tv"
+SITE = "https://www.corpflix.com.br"
 
 # ---------------------------------------------------------------- hero / credo
 HERO = {

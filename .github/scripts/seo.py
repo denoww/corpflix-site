@@ -42,7 +42,7 @@ RAIZ = Path(__file__).resolve().parents[2]
 # é `/sitemap` e `/sitemap.xml` responde 301, e sitemap entregue ao Google por redirect
 # vira aviso no Search Console (achado em 21/08/2026 nas irmãs, que herdaram o `.xml`).
 SITEMAP_BLOG: str | None = None
-BASE = 'https://www.corpflix.tv'
+BASE = 'https://www.corpflix.com.br'
 
 # Copy que não pode existir em página pública. Mesma doutrina do guard do blog:
 # a frase honesta NEGA a promessa, então "não existe relatório de veiculação" tem
