@@ -3,5 +3,5 @@ Allow: /
 
 # Índice primeiro. Hoje ele lista só o sitemap deste site (o Corpflix não tem blog);
 # no dia em que tiver, o índice passa a apontar pros dois sem mexer aqui.
-Sitemap: https://www.corpflix.com.br/sitemap-index.xml
-Sitemap: https://www.corpflix.com.br/sitemap.xml
+Sitemap: https://www.corpflix.tv/sitemap-index.xml
+Sitemap: https://www.corpflix.tv/sitemap.xml

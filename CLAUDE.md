@@ -4,6 +4,17 @@ Site institucional do **Corpflix** — TV de mídia indoor **gerenciada**: a gen
 player na TV do cliente, publica o conteúdo e monitora a tela. Estático, sem build de
 framework. Servido por **GitHub Pages** em `https://www.corpflix.com.br`.
 
+> ⏳ **PROVISÓRIO (desde 11/09/2026): o site está em `https://www.corpflix.tv`.** O domínio de venda
+> continua sendo o `.com.br` (decisão no roadmap do ERP), mas o Registro.br segurou a delegação do
+> NS, e o Rodrigo pediu pra adiantar tudo no `.tv`. O `CNAME`, os canonicals, o sitemap, o
+> `robots.txt`, o `_config.yml`, o `BASE` do `seo.py` e o `SITE` do livreto apontam hoje pro `.tv`.
+> **A volta** (quando `dig NS corpflix.com.br @a.dns.br +norecurse` mostrar `awsdns`):
+> `sed -i 's/corpflix\.tv/corpflix.com.br/g'` nos mesmos arquivos (inclusive `CNAME`) → push →
+> `gh api -X PUT repos/denoww/corpflix-site/pages -f cname=www.corpflix.com.br` → religar o
+> redirect do repo `denoww/corpflix-tv` (instruções no CLAUDE.md dele) → Search Console: ferramenta
+> **Mudança de endereço** da propriedade `corpflix.tv` pra `corpflix.com.br`. O resto deste
+> arquivo descreve o estado final (`.com.br`).
+
 O produto é o **módulo de Publicidade do ERP SeuCondomínio** (`denoww/seucondominio`,
 `app/services/publicidade/` + `app/models/publicidade/`) vendido com marca própria. Isso
 define a regra prática: **a fonte da verdade do que pode ser prometido é o código de lá**,
