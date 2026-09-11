@@ -100,6 +100,13 @@ o "Entrar" é outline e o WhatsApp é o pill sólido.
 - No nav escuro o texto do "Entrar" é o `--lilas` (#C9A7FF), não o `--roxo`: roxo sobre `--noite`
   reprova AA em 13px. Em ≤400px os dois pills encolhem o padding pra caber em 360px.
 
+**Blog (desde 11/09/2026):** é o `Auto::Marcas::Corpflix` do ERP (post diário automático), servido
+em `https://blog.corpflix.tv` (⏳ provisório — volta pro `.com.br` no mesmo `sed` do topo). O site só
+linka: `<link rel="alternate">` do RSS no head das 4 páginas e "Blog"/"RSS" no rodapé (a
+privacidade leva só "Blog"). Nasce **noindex** — o `SITEMAP_BLOG` do `seo.py` e o
+`sitemap-index.xml` só recebem o blog **no flip** pra indexável (≥5 diários + 1 pilar revisados),
+senão o `--http` e o Google recebem um sitemap de páginas `noindex`.
+
 **Fonte única de contato:** o dotfile `.whatsapp` na raiz (dotfile não é publicado pelo
 Pages). O `guarda.yml` reprova o push se algum `wa.me` do HTML ou o `telephone` do JSON-LD
 divergir dele. Trocou de número? Edite `.whatsapp` e os literais — o guard aponta quais.
