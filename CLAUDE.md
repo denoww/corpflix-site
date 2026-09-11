@@ -81,8 +81,24 @@ Não "conserte" tirando o `--http`: espere o cert e rode de novo.
 | Imagens (nomes fixos, ver abaixo) | `assets/` |
 | Guardas de CI | `.github/workflows/{guarda,seo,livreto}.yml` + `.github/scripts/seo.py` |
 
-**Não existe `entrar.html` nem `.login`**: o cliente não opera painel próprio. Não crie botão
-"Entrar" sem antes existir um login de verdade para ele apontar.
+**Login (desde 11/09/2026): `.login` + `entrar.html` + pill "Entrar" no nav**, igual às irmãs.
+O destino é o login do ERP **com a marca Corpflix** no host `app.corpflix.tv` (caminho `/logar`,
+com `?no_layout=true`) — o host é o tenant CloudFront `corpflix` na distribution multi-tenant `erpsc`, e o ERP reconhece
+a marca pelo bloco `CORPFLIX` de `app/services/institucional/marcas.rb` (o registry já tem os dois
+hosts, `app.corpflix.tv` e `app.corpflix.com.br`). Quem entra é quem **opera** as telas (o time
+da casa e os tenants liberados); o cliente final continua mandando a peça pelo WhatsApp — por isso
+o "Entrar" é outline e o WhatsApp é o pill sólido.
+- **Fonte da verdade:** o dotfile `.login` (sem newline no fim). A URL aparece 2× no
+  `entrar.html` (meta refresh + `href` do `#ir`); o `guarda.yml` reprova se divergirem, se a
+  ponte sumir ou se o `index.html` deixar de linkar `/entrar`, e faz um `curl` no destino como
+  **aviso** (não erro — push de site não trava por ERP em deploy).
+- **⏳ Volta pro `.com.br`:** junto com o resto do site — troque o host em `.login` e nos 2 literais do
+  `entrar.html` pra `app.corpflix.com.br` (o sed do topo deste arquivo pega os três).
+  ⚠️ Não escreva a URL completa do login em `.md`/`.html` fora desses lugares: o `guarda.yml`
+  varre `*.md` também e reprova qualquer `https://…/logar…` que não seja idêntico ao `.login`. Do lado do ERP, trocar `app_host`/`site_url` do bloco `CORPFLIX` e criar
+  o domínio `app.corpflix.com.br` no tenant `corpflix` (cert `*.corpflix.com.br`).
+- No nav escuro o texto do "Entrar" é o `--lilas` (#C9A7FF), não o `--roxo`: roxo sobre `--noite`
+  reprova AA em 13px. Em ≤400px os dois pills encolhem o padding pra caber em 360px.
 
 **Fonte única de contato:** o dotfile `.whatsapp` na raiz (dotfile não é publicado pelo
 Pages). O `guarda.yml` reprova o push se algum `wa.me` do HTML ou o `telephone` do JSON-LD

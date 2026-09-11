@@ -1,9 +1,8 @@
 # Guarda de contato: o número de WhatsApp não pode divergir entre as páginas.
 #
 # POR QUE ISTO EXISTE
-# O número aparece em vários links `wa.me` espalhados pela home, pelas 3 páginas de público
-# (comércio, corporativa, elevador) e pelo livreto. Nas marcas irmãs já foi trocado à mão
-# uma vez; da próxima, esquecer UM link significa um lead ligando para um número
+# O número aparece em ~7 links `wa.me` só no index.html, mais o livreto. Já foi trocado
+# à mão uma vez; da próxima, esquecer UM link significa um lead ligando para um número
 # que não é nosso — e ninguém descobre, porque nada quebra. A página continua bonita.
 #
 # COMO FUNCIONA
@@ -19,14 +18,8 @@
 # rodar — conferi-lo aqui faria este job falhar em todo push legítimo. Ele deriva do
 # mesmo `.whatsapp`, então está coberto na origem.
 #
-# Telefone FICTÍCIO de exemplo (tipo "+55 62 9 9612-4408") não casa com o regex de
-# propósito: ele exige 10+ dígitos CONTÍGUOS, e aquele tem espaços e hífen.
-#
-# SEM GUARDA DE LOGIN, DE PROPÓSITO
-# Os sites irmãos (as outras marcas de produto do ERP) têm `.login` + `entrar.html` e um bloco
-# aqui conferindo o destino. O Corpflix NÃO tem: o cliente não opera painel próprio (quem
-# publica é o nosso time — "você manda, a gente publica"). Não crie botão Entrar sem antes
-# existir um login de verdade pra ele apontar.
+# Os telefones FICTÍCIOS da demo (personas tipo "+55 62 9 9612-4408") não casam com o
+# regex de propósito: ele exige 10+ dígitos CONTÍGUOS, e aqueles têm espaços e hífen.
 
 name: guarda (contato consistente)
 
@@ -91,3 +84,61 @@ jobs:
             exit 1
           fi
           echo "nenhum telefone divergente no JSON-LD"
+
+      # ── DESTINO DO LOGIN ────────────────────────────────────────────────────
+      # Mesma doutrina do WhatsApp: `.login` na raiz é a FONTE DA VERDADE (dotfile, e
+      # o GitHub Pages não publica arquivo que começa com ponto). O destino vive
+      # literal em entrar.html (2×: o meta refresh do fallback sem-JS e o href do
+      # botão) porque front matter na home mataria o `diff <(curl -s …) index.html`,
+      # que é a rede de segurança do playbook. É ESTE job que garante que os literais
+      # nunca divirjam — e é o que torna a futura troca de destino (quando o login
+      # passar a ser servido em app.<marca>.app) uma edição de UMA linha, protegida.
+      - name: O destino do login é bem formado
+        run: |
+          CANON=$(cat .login | tr -d '[:space:]')
+          echo "canônico: $CANON"
+          echo "$CANON" | grep -qE '^https://[a-z0-9.-]+/logar(\?no_layout=true)?$' \
+            || { echo "::error::.login deve ser https://<host>/logar (opcionalmente ?no_layout=true), veio '$CANON'"; exit 1; }
+
+      - name: Todo destino de login aponta para o canônico
+        run: |
+          CANON=$(cat .login | tr -d '[:space:]')
+          FONTES=$(git ls-files '*.html' '*.py' '*.md' | grep -v '^livreto/index.html$')
+          ACHADOS=$(grep -Ioh 'https://[a-zA-Z0-9.-]*/logar[^"[:space:]>]*' $FONTES \
+                    | sort -u | grep -vxF "$CANON" || true)
+          if [ -n "$ACHADOS" ]; then
+            echo "::error::destino de login divergente do .login ($CANON): $ACHADOS"
+            grep -In 'https://[a-zA-Z0-9.-]*/logar' $FONTES || true
+            exit 1
+          fi
+          echo "todos os destinos de login batem com $CANON"
+
+      # O botão só vale se a ponte existir e estiver linkada. Sem esta checagem um
+      # refactor de header derruba o "Entrar" e NADA quebra — a página continua
+      # bonita, exatamente o cenário que motivou o guard do WhatsApp.
+      - name: A ponte /entrar existe e está linkada
+        run: |
+          test -f entrar.html \
+            || { echo "::error::entrar.html não existe — o botão Entrar aponta pro vazio"; exit 1; }
+          grep -q 'href="/entrar"' index.html \
+            || { echo "::error::index.html não linka /entrar (o botão Entrar sumiu do header?)"; exit 1; }
+          RUINS=$(grep -Ioh 'href="/entrar[^"]*"' $(git ls-files '*.html') \
+                  | sort -u | grep -vxF 'href="/entrar"' || true)
+          if [ -n "$RUINS" ]; then
+            echo "::error::link da ponte fora do caminho canônico href=\"/entrar\": $RUINS"
+            exit 1
+          fi
+          echo "ponte /entrar existe e está linkada"
+
+      # AVISO, não erro: o destino é o ERP, e um push de SITE não pode ficar
+      # bloqueado porque o ERP está lento ou em deploy. Mesmo critério do espelho
+      # do livreto acima — fica visível no run em vez de virar link morto silencioso.
+      - name: O destino do login está no ar?
+        run: |
+          CANON=$(cat .login | tr -d '[:space:]')
+          CODE=$(curl -s -o /dev/null -w '%{http_code}' -L --max-time 25 "$CANON" || echo 000)
+          if [ "$CODE" = "200" ]; then
+            echo "destino do login respondeu 200"
+          else
+            echo "::warning::destino do login ($CANON) respondeu $CODE — confira se o login está no ar"
+          fi

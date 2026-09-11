@@ -52,6 +52,10 @@
   header{background:var(--noite);padding:14px 0;margin-bottom:56px;border-bottom:2px solid transparent;border-image:var(--grad) 1}
   header a{display:inline-flex;align-items:center;gap:8px;color:#fff;text-decoration:none;font-weight:600;letter-spacing:-.02em}
   header img{width:24px;height:24px;border-radius:6px}
+  header .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px}
+  /* "Entrar" outline no cabeçalho escuro: texto lilás (#C9A7FF) — o --roxo sobre --noite reprova AA. */
+  header a.entrar{color:#C9A7FF;font-size:13px;font-weight:500;letter-spacing:0;padding:6px 14px;border-radius:980px;border:1px solid rgba(201,167,255,.45)}
+  header a.entrar:hover{background:var(--roxo);color:#fff;border-color:var(--roxo)}
   h1{font-size:clamp(32px,5vw,44px);font-weight:600;letter-spacing:-.015em;line-height:1.1;margin-bottom:16px}
   h2{font-size:24px;font-weight:600;letter-spacing:-.003em;margin:44px 0 12px}
   p{margin-bottom:16px;color:var(--tinta-2)}
@@ -71,7 +75,7 @@
 <body>
 
 <header>
-  <div class="wrap"><a href="/"><img src="/assets/brand-mark.png" width="24" height="24" alt="" /><span>Corpflix</span></a></div>
+  <div class="wrap"><a href="/"><img src="/assets/brand-mark.png" width="24" height="24" alt="" /><span>Corpflix</span></a><a class="entrar" href="/entrar">Entrar</a></div>
 </header>
 
 <main class="wrap">

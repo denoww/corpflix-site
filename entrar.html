@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Entrar — Corpflix</title>
+<meta name="description" content="Acesse o painel das suas telas com o e-mail e a senha da sua conta." />
+<!-- noindex: é uma ponte para o login, não conteúdo. `follow` porque os links daqui
+     (home, privacidade) são caminhos legítimos que o crawler deve continuar seguindo. -->
+<meta name="robots" content="noindex, follow" />
+<!-- FALLBACK sem JavaScript. Atraso de 1s de propósito: o `location.replace` do rodapé
+     roda antes disso e não empilha entrada no histórico (o meta refresh empilha, e aí o
+     "voltar" do browser devolve o visitante para esta página e ele fica preso num loop).
+     Quem tem JS nunca chega a ver esse timer; quem não tem, entra 1s depois.
+     ⚠️ A URL aparece 2× nesta página (aqui e no href do botão; o JS lê esse href em vez
+     de repetir o literal). A FONTE DA VERDADE é o dotfile `.login` na raiz, e o workflow
+     `guarda.yml` barra o push se qualquer uma delas divergir dele.
+     O login é o do ERP com a marca Corpflix: `app.corpflix.tv` é o tenant CloudFront
+     `corpflix` na distribution `erpsc` (⏳ provisório — volta pra `app.corpflix.com.br`
+     junto com o resto do site; ver o topo do CLAUDE.md). -->
+<meta http-equiv="refresh" content="1;url=https://app.corpflix.tv/logar?no_layout=true" />
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png" />
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png" />
+<link rel="manifest" href="/manifest.json" />
+<meta name="theme-color" content="#0A0716" />
+<style>
+  /* Mesma doutrina do 404: nenhuma fonte de terceiro, nenhum stylesheet externo.
+     Esta página existe para durar 300ms — um request bloqueante aqui é puro atraso. */
+  *{box-sizing:border-box}
+  body{
+    margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;
+    background:#f5f5f7;color:#1d1d1f;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased;padding:24px;
+  }
+  main{max-width:560px;text-align:center}
+  .marca{
+    display:inline-flex;align-items:center;gap:8px;font-weight:600;font-size:17px;
+    letter-spacing:-.02em;color:#1d1d1f;text-decoration:none;margin-bottom:32px;
+  }
+  .marca img{width:24px;height:24px;border-radius:6px}
+  h1{
+    /* tracking negativo só em tamanho grande — abaixo de 20px a Apple inverte o sinal */
+    font-size:clamp(28px,5vw,40px);line-height:1.1;letter-spacing:-.015em;
+    font-weight:600;margin:0 0 16px;
+  }
+  p.sub{font-size:19px;line-height:1.5;color:#6e6e73;margin:0 0 32px}
+  /* #9100FF com texto branco = 5,76:1 (passa AA); hover no --roxo-esc #6A00E0 (7,81:1). */
+  a.btn{
+    display:inline-flex;align-items:center;justify-content:center;gap:8px;
+    border-radius:980px;padding:12px 22px;font-size:17px;font-weight:400;
+    text-decoration:none;background:#9100FF;color:#fff;transition:background .1s linear;
+  }
+  a.btn:hover{background:#6A00E0}
+  .giro{
+    width:18px;height:18px;border-radius:50%;flex-shrink:0;
+    border:2px solid rgba(255,255,255,.35);border-top-color:#fff;
+    animation:gira .7s linear infinite;
+  }
+  @keyframes gira{to{transform:rotate(360deg)}}
+  /* Sem animação para quem pediu para não animar — e sem deixar um anel morto na tela. */
+  @media(prefers-reduced-motion:reduce){ .giro{display:none} }
+  small{display:block;margin-top:40px;font-size:14px;color:#6e6e73;line-height:1.6}
+  small a{color:#6e6e73}
+  a:focus-visible{outline:3px solid #9100FF;outline-offset:3px;border-radius:4px}
+</style>
+</head>
+<body>
+  <main>
+    <a class="marca" href="/">
+      <img src="/assets/brand-mark.png" width="24" height="24" alt="" />
+      <span>Corpflix</span>
+    </a>
+    <h1>Entrando no painel…</h1>
+    <p class="sub">Estamos abrindo a tela de login. Se não acontecer em alguns segundos, use o botão abaixo.</p>
+    <!-- id="ir": o JS do rodapé lê o href DESTE link em vez de repetir a URL, então o
+         destino tem um literal a menos para divergir. -->
+    <a class="btn" id="ir" href="https://app.corpflix.tv/logar?no_layout=true">
+      <span class="giro" aria-hidden="true"></span>
+      Continuar para o login
+    </a>
+    <small>
+      Acesse o painel das suas telas com o e-mail e a senha da sua conta.<br />
+      Ainda não é cliente? <a href="/">Conheça o Corpflix</a> · <a href="/privacidade">Privacidade</a>
+    </small>
+  </main>
+<script>
+  // `replace` (não `href =`): não empilha esta ponte no histórico, então o "voltar"
+  // do browser leva o visitante de volta ao site — não a um redirect que o reenvia.
+  location.replace(document.getElementById('ir').href);
+</script>
+</body>
+</html>

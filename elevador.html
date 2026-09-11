@@ -132,6 +132,21 @@ section[id]{scroll-margin-top:calc(var(--nav-h) + 12px)}
 .nav-links a:hover,.nav-links a[aria-current="page"]{opacity:1;color:var(--lilas)}
 .nav-cta{background:var(--roxo);color:#fff;padding:6px 14px;border-radius:980px;font-size:13px;font-weight:500;text-decoration:none;white-space:nowrap;transition:background .2s}
 .nav-cta:hover{background:var(--roxo-esc)}
+.nav-acoes{display:flex;align-items:center;gap:10px}
+/* "Entrar" é OUTLINE de propósito: o WhatsApp é o CTA primário (sólido, pra quem ainda
+   não é cliente) e o login serve quem JÁ opera as telas. Mesma métrica do .nav-cta pros
+   dois pills casarem. Fica FORA do .nav-links: assim sobrevive ao mobile.
+   Cor: o nav é escuro (--noite), então o texto é o --lilas (#C9A7FF), não o --roxo —
+   roxo sobre quase-preto dá ~3:1 e reprova o AA em 13px. */
+.nav-entrar{
+  color:var(--lilas);padding:6px 14px;border-radius:980px;white-space:nowrap;
+  font-size:13px;font-weight:500;text-decoration:none;display:inline-flex;align-items:center;
+  border:1px solid rgba(201,167,255,.45);
+  transition:background .2s,color .2s,border-color .2s
+}
+.nav-entrar:hover{background:var(--roxo);color:#fff;border-color:var(--roxo)}
+/* Em 360px marca + Entrar + WhatsApp não cabem com o padding cheio: os pills encolhem. */
+@media (max-width:400px){ .nav-entrar,.nav-cta{padding:6px 11px} .nav-acoes{gap:8px} }
 /* Abaixo de 760px o menu do meio sai e sobram marca + CTA — hambúrguer para
    4 links é peso de JS por nada. As 3 páginas de público seguem alcançáveis
    pelos cards da home e pelo rodapé. */
@@ -313,7 +328,10 @@ details p{margin:14px 0 0;color:var(--tinta-2);max-width:70ch}
         <a href="/elevador" aria-current="page">Condomínios</a>
         <a href="/livreto/">Livreto</a>
       </span>
-      <a class="nav-cta" href="https://wa.me/5562985673142?text=Ol%C3%A1%21%20Vim%20pelo%20menu%20do%20site%20do%20Corpflix%20e%20quero%20saber%20mais.">Falar no WhatsApp</a>
+      <span class="nav-acoes">
+        <a class="nav-entrar" href="/entrar">Entrar</a>
+        <a class="nav-cta" href="https://wa.me/5562985673142?text=Ol%C3%A1%21%20Vim%20pelo%20menu%20do%20site%20do%20Corpflix%20e%20quero%20saber%20mais.">Falar no WhatsApp</a>
+      </span>
     </span>
   </div>
 </nav>
