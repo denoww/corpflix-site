@@ -33,9 +33,16 @@ diff <(curl -s https://www.corpflix.com.br/index.html) index.html && echo "prod 
 
 **Domínio:** o `CNAME` do repo é `www.corpflix.com.br` — é ele que define o host canônico.
 O apex (`corpflix.com.br`) **redireciona para o www** (o Pages faz isso sozinho quando o apex
-também aponta pros IPs dele). DNS no **Route53, zona `Z00602744EG528NIKYXM`**, com o NS
-**delegado no Registro.br**. O `www` é CNAME para `denoww.github.io`; o apex, 4 registros A
-dos IPs do Pages (`185.199.108-111.153`, conferido em 11/09/2026). O domínio **não manda
+também aponta pros IPs dele). A zona **Route53 `Z00602744EG528NIKYXM`** está pronta: `www`
+CNAME para `denoww.github.io`, apex com 4 registros A dos IPs do Pages (`185.199.108-111.153`).
+
+⚠️ **Mas em 11/09/2026 essa zona NÃO estava valendo.** O Registro.br delegava o domínio para
+`a.sec.dns.br`/`c.sec.dns.br` (o DNS do próprio Registro.br), que apontava `www` e apex para o
+**Heroku** (`ssl-heroku.herokuapp.com`). Enquanto o NS do Registro.br não for trocado para os 4
+`awsdns` da zona (`ns-1826.awsdns-36.co.uk`, `ns-907.awsdns-49.net`, `ns-1161.awsdns-17.org`,
+`ns-311.awsdns-38.com`), o site não abre no domínio, o certificado do Pages não sai e o
+`seo.yml` falha no `--http`. Confira sempre pelo DNS público, não pelo Route53:
+`dig NS corpflix.com.br @a.dns.br +norecurse` e `dig +short www.corpflix.com.br`. O domínio **não manda
 e-mail**: MX nulo (`0 .`), SPF `-all` e DMARC `p=reject` — não ponha e-mail `@corpflix.com.br`
 na copy sem antes configurar caixa de verdade. Se um dia inverter o canônico, atualize junto: `canonical`, `og:url`,
 `sitemap.xml`, `robots.txt` e o `BASE` do `seo.py` — senão eles apontam para uma URL que
