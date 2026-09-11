@@ -1,0 +1,160 @@
+# Espelho automático do livreto: HTML e PDF sempre iguais à fonte.
+#
+# POR QUE ISTO EXISTE
+# O roadmap do livreto (SeuCondomínio) tem uma regra de ouro: o PDF é um ESPELHO
+# automático do HTML — "sem humano". Lá isso é feito em RUNTIME pelo Gotenberg,
+# cacheado pelo hash do HTML. Eles descartaram CI por duas restrições explícitas:
+# o master tem branch protection (o workflow não consegue commitar de volta) e a
+# imagem de produção não tem Chromium (PR #470, defesa contra RCE no V8).
+#
+# Aqui NENHUMA das duas vale: este repo não tem branch protection e o runner do
+# GitHub tem Chrome. Só que o site é estático (Pages, sem runtime), então o espelho
+# não pode ser em runtime — é em CI. Sem isto, quem editasse `content.py` e rodasse
+# só o `build.py` publicaria um PDF VELHO em silêncio (o pior tipo de bug: nada quebra,
+# o comercial só manda a versão errada pro cliente).
+#
+# ANTI-LOOP
+# O gatilho escuta só as FONTES (content.py, build.py, assets, tools). O commit que
+# este workflow faz toca apenas os GERADOS (livreto/index.html, livreto.pdf), que não
+# estão no filtro — então ele não se re-dispara. O `[skip ci]` é cinto e suspensório.
+
+name: livreto (espelho HTML + PDF)
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'livreto/content.py'
+      - 'livreto/build.py'
+      - 'livreto/build_pdf.sh'
+      - 'tools/**'
+      - 'assets/**'
+  workflow_dispatch:
+    inputs:
+      force:
+        description: 'Refazer o PDF mesmo sem mudança de conteúdo'
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: livreto
+  cancel-in-progress: false
+
+jobs:
+  espelho:
+    runs-on: ubuntu-latest
+    steps:
+      # ⚠️ `ref: main` de propósito. O default do checkout é o SHA DO EVENTO — e se
+      # o bot já commitou um espelho depois desse SHA (dois pushes seguidos, que a
+      # concurrency serializa), a árvore vem SEM o commit do bot e o rebase do push
+      # CONFLITA nos arquivos gerados. Foi o que aconteceu no run de 12/07.
+      # Buscando o topo de main, sempre construímos sobre o espelho mais recente.
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Garante o Chrome (o runner já traz, mas não confie)
+        run: |
+          if ! command -v google-chrome >/dev/null; then
+            wget -qO /tmp/chrome.deb https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+            sudo apt-get update -qq && sudo apt-get install -y -qq /tmp/chrome.deb
+          fi
+          google-chrome --version
+
+      - name: Gera o HTML
+        run: python3 livreto/build.py
+
+      # O PDF do Chrome NÃO é determinístico: ele carimba CreationDate/ModDate, então
+      # dois builds do MESMO conteúdo dão bytes diferentes. Sem este gate, o CI
+      # commitaria 1,5 MB de binário a CADA push — para sempre, sem nada ter mudado —
+      # inchando o repo e fazendo "o PDF mudou" não significar mais nada no diff.
+      #
+      # O PDF é função pura do HTML + dos ASSETS que ele embute. Então a impressão
+      # digital é do CONTEÚDO, não dos bytes do PDF. (Gatear só pelo HTML seria um bug:
+      # trocar uma foto muda o PDF sem mudar uma linha de HTML.)
+      # O fingerprint tem que ser REPRODUTÍVEL fora do CI, senão ninguém consegue
+      # auditar. `cat assets/*` não era: a ordem do glob depende da COLAÇÃO do locale
+      # — em LC_ALL=C `faixa-mob.jpg` vem antes de `faixa.jpg` (o '-' < '.'), em
+      # en_US a pontuação é ignorada e a ordem inverte. Mesmo conteúdo, sha diferente.
+      # find + LC_ALL=C sort + sha por arquivo dá um valor estável em qualquer máquina
+      # (e ainda pega assets em subpasta, que o glob raso deixaria passar).
+      - name: Fingerprint do conteúdo — precisa mesmo refazer o PDF?
+        id: fp
+        run: |
+          NOVO=$(find livreto/index.html assets -type f | LC_ALL=C sort \
+                 | xargs sha256sum | sha256sum | cut -c1-16)
+          VELHO=$(cat livreto/.espelho.sha 2>/dev/null || echo "nenhum")
+          echo "conteudo antigo=$VELHO novo=$NOVO"
+          if [ "$NOVO" = "$VELHO" ] && [ "${{ github.event.inputs.force }}" != "true" ]; then
+            echo "refazer=nao" >> $GITHUB_OUTPUT
+            echo "espelho já está em dia — PDF não precisa ser refeito"
+          else
+            echo "refazer=sim" >> $GITHUB_OUTPUT
+            echo "$NOVO" > livreto/.espelho.sha
+          fi
+
+      - name: Gera o PDF
+        if: steps.fp.outputs.refazer == 'sim'
+        run: bash livreto/build_pdf.sh
+
+      # As três travas do print CSS (do playbook do SeuCondomínio) quebram em
+      # SILÊNCIO: sem `.rev{opacity:1}` o PDF sai EM BRANCO e ninguém percebe até
+      # o cliente abrir. Então o CI abre o PDF e confere.
+      - name: Confere que o PDF não saiu em branco
+        if: steps.fp.outputs.refazer == 'sim'
+        run: |
+          # imagemagick NÃO vem no runner ubuntu-24.04 (o `identify` some e o passo
+          # morre com exit 127) — instalar junto com o poppler.
+          sudo apt-get install -y -qq poppler-utils imagemagick
+          PAGS=$(pdfinfo livreto.pdf | awk '/^Pages:/{print $2}')
+          echo "páginas: $PAGS"
+          [ "$PAGS" -ge 8 ] || { echo "::error::PDF com só $PAGS páginas — build quebrado"; exit 1; }
+
+          pdfinfo livreto.pdf | grep -q "A4" || echo "::warning::PDF não está em A4"
+
+          # Uma página em branco tem desvio-padrão ~0. Se a 1ª e a 5ª forem chapadas,
+          # o @media print falhou (o reveal não foi forçado) e o PDF é inútil.
+          pdftoppm -jpeg -r 40 -f 1 -l 1 livreto.pdf /tmp/p1
+          pdftoppm -jpeg -r 40 -f 5 -l 5 livreto.pdf /tmp/p5
+          for f in /tmp/p1*.jpg /tmp/p5*.jpg; do
+            SD=$(identify -format "%[standard-deviation]" "$f")
+            echo "$f desvio=$SD"
+            awk -v sd="$SD" 'BEGIN{ if (sd+0 < 1000) { print "::error::página em branco — o @media print quebrou (.rev{opacity:1})"; exit 1 } }'
+          done
+
+      - name: Commita o espelho
+        run: |
+          # ⚠️ Era `git diff --quiet -- <paths>`, que NÃO enxerga arquivo UNTRACKED.
+          # No repo de origem o livreto.pdf já era rastreado desde sempre, então o diff
+          # bastava. Num repo NOVO criado a partir deste blueprint o PDF nasce untracked
+          # na primeira execução: o build gerava as 19 páginas, o guard de página em
+          # branco passava, e aqui o job dizia "nada mudou" e saía com sucesso — o PDF
+          # nunca chegava ao repositório, e /livreto.pdf respondia 404 sem nenhum
+          # workflow vermelho para denunciar. `git status --porcelain` cobre os dois
+          # casos (modificado E não rastreado).
+          if [ -z "$(git status --porcelain -- livreto/index.html livreto.pdf livreto/.espelho.sha)" ]; then
+            echo "nada mudou — sem commit"
+            exit 0
+          fi
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add livreto/index.html livreto.pdf livreto/.espelho.sha
+          git commit -m "chore(livreto): regenera espelho HTML+PDF [skip ci]"
+
+          # o build deixa lixo na árvore (ex.: __pycache__, PDF re-render); sem
+          # --autostash o rebase morre com "cannot pull with rebase: You have
+          # unstaged changes" e o espelho falha calado (run 29154713122).
+          echo "--- sujeira na árvore (só pra diagnóstico) ---"; git status --short
+
+          # Se alguém empurrou pro main enquanto o build rodava, o push é REJEITADO
+          # (non-fast-forward). Aconteceu de verdade no run 29154611371.
+          for tent in 1 2 3; do
+            git pull --rebase --autostash --quiet origin main && git push && exit 0
+            echo "push rejeitado (tentativa $tent) — rebaseando"
+            sleep 5
+          done
+          echo "::error::não consegui empurrar o espelho após 3 tentativas"; exit 1

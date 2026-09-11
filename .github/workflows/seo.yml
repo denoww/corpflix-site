@@ -1,0 +1,76 @@
+# Sitemap gerado + invariantes de SEO.
+#
+# POR QUE ISTO EXISTE
+# O sitemap era mantido À MÃO, e já mentia: o `/livreto` tinha `<loc>` sem barra
+# enquanto o canonical da página tinha — o Google segue o 301, escolhe a URL final
+# e o `<loc>` vira crawl desperdiçado. Nada quebra; a página continua bonita.
+# Agora o `<loc>` é o PRÓPRIO canonical lido do HTML, então essa divergência não é
+# mais possível de acontecer, e não só é checada. A lógica toda vive em
+# `.github/scripts/seo.py` — rodável na mão, sem CI.
+#
+# POR QUE NÃO `jekyll-sitemap`
+# (1) só gera se NÃO existir `sitemap.xml` no fonte; (2) incluiria
+# `/livreto/index.html`, colidindo com o canonical `/livreto/`; (3) usa mtime do
+# arquivo como `lastmod` — no runner isso é a data do CHECKOUT, ou seja, todo
+# lastmod mentiria "atualizado hoje" a cada push. O script usa `git log -1 %cs`.
+#
+# ⚠️ `fetch-depth: 0` NÃO é opcional: sem o histórico, o `git log` do lastmod
+# devolve vazio e toda data cai no fallback.
+#
+# ⚠️ `paths` só de HTML, e o bot só commita `sitemap*.xml` — que não casa o
+# filtro. Sem isso o commit do bot dispararia o próprio workflow, em laço.
+
+name: seo (sitemap + invariantes)
+
+on:
+  push:
+    branches: [main]
+    paths: ['**.html', '_config.yml', '.github/scripts/seo.py']
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: seo-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  seo:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      # Em PR não escreve nada: só reprova se algum invariante quebrou.
+      - name: Conferir invariantes (PR)
+        if: github.event_name == 'pull_request'
+        run: python3 .github/scripts/seo.py --check --http
+
+      - name: Gerar sitemap e conferir invariantes
+        if: github.event_name != 'pull_request'
+        run: python3 .github/scripts/seo.py --http
+
+      - name: Commitar o sitemap, se mudou
+        if: github.event_name != 'pull_request'
+        run: |
+          if git diff --quiet -- sitemap.xml sitemap-index.xml; then
+            echo "sitemap já estava em dia"
+            exit 0
+          fi
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add sitemap.xml sitemap-index.xml
+          git commit -m "chore(seo): sitemap [skip ci]"
+          # Mesmo retry do livreto.yml: dois workflows podem commitar no mesmo
+          # push (este e o do livreto) e o segundo levaria non-fast-forward.
+          for i in 1 2 3; do
+            git pull --rebase --autostash origin main && git push origin HEAD:main && exit 0
+            echo "tentativa $i falhou, repetindo…"
+            sleep 5
+          done
+          echo "::error::não consegui empurrar o sitemap depois de 3 tentativas"
+          exit 1

@@ -1,0 +1,93 @@
+# Guarda de contato: o número de WhatsApp não pode divergir entre as páginas.
+#
+# POR QUE ISTO EXISTE
+# O número aparece em vários links `wa.me` espalhados pela home, pelas 3 páginas de público
+# (comércio, corporativa, elevador) e pelo livreto. Nas marcas irmãs já foi trocado à mão
+# uma vez; da próxima, esquecer UM link significa um lead ligando para um número
+# que não é nosso — e ninguém descobre, porque nada quebra. A página continua bonita.
+#
+# COMO FUNCIONA
+# `.whatsapp` na raiz é a FONTE DA VERDADE (dotfile: o GitHub Pages não publica arquivos
+# que começam com ponto — conferido, `/livreto/.espelho.sha` responde 404). O livreto já
+# deriva dele em `livreto/content.py`. O HTML segue literal (front matter na home mataria
+# a doutrina `diff <(curl -s .../index.html) index.html`, que é a rede de segurança do
+# playbook), e é ESTE job que garante que o literal nunca divirja.
+#
+# O QUE NÃO É CONFERIDO, E POR QUÊ
+# `livreto/index.html` é GERADO pelo workflow `livreto.yml` a partir do `content.py`.
+# No mesmo push que muda o número ele ainda está velho por alguns segundos, até o espelho
+# rodar — conferi-lo aqui faria este job falhar em todo push legítimo. Ele deriva do
+# mesmo `.whatsapp`, então está coberto na origem.
+#
+# Telefone FICTÍCIO de exemplo (tipo "+55 62 9 9612-4408") não casa com o regex de
+# propósito: ele exige 10+ dígitos CONTÍGUOS, e aquele tem espaços e hífen.
+#
+# SEM GUARDA DE LOGIN, DE PROPÓSITO
+# Os sites irmãos (as outras marcas de produto do ERP) têm `.login` + `entrar.html` e um bloco
+# aqui conferindo o destino. O Corpflix NÃO tem: o cliente não opera painel próprio (quem
+# publica é o nosso time — "você manda, a gente publica"). Não crie botão Entrar sem antes
+# existir um login de verdade pra ele apontar.
+
+name: guarda (contato consistente)
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  contato:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: O número canônico é bem formado
+        run: |
+          CANON=$(cat .whatsapp | tr -d '[:space:]')
+          echo "canônico: $CANON"
+          echo "$CANON" | grep -qE '^55[0-9]{11}$' \
+            || { echo "::error::.whatsapp deve ser 55 + DDD + 9 dígitos (13 no total), veio '$CANON'"; exit 1; }
+
+      # `git ls-files` em vez de `grep -r`: confere só o que está RASTREADO (nada de
+      # __pycache__ ou lixo de ferramenta) e permite excluir o espelho gerado por
+      # CAMINHO — o `--exclude` do grep casa só basename e mataria a home junto.
+      - name: Todo link wa.me aponta para o número canônico
+        run: |
+          CANON=$(cat .whatsapp | tr -d '[:space:]')
+          FONTES=$(git ls-files '*.html' '*.py' '*.md' | grep -v '^livreto/index.html$')
+          ACHADOS=$(grep -Ioh 'wa\.me/[0-9]\{10,\}' $FONTES \
+                    | sed 's|wa\.me/||' | sort -u | grep -v "^$CANON$" || true)
+          if [ -n "$ACHADOS" ]; then
+            echo "::error::wa.me divergente do .whatsapp ($CANON): $ACHADOS"
+            grep -In 'wa\.me/[0-9]\{10,\}' $FONTES | grep -v "wa\.me/$CANON" || true
+            exit 1
+          fi
+          echo "todos os links wa.me das fontes batem com $CANON"
+
+      # O espelho é AVISO, não erro: no mesmo push que troca o número ele ainda está
+      # velho até o `livreto.yml` regenerar. Se continuar divergente depois disso, o
+      # aviso fica visível no run em vez de virar um número errado silencioso em produção.
+      - name: O espelho do livreto já refletiu o número?
+        run: |
+          CANON=$(cat .whatsapp | tr -d '[:space:]')
+          if grep -q "wa\.me/$CANON" livreto/index.html && \
+             ! grep -Ioh 'wa\.me/[0-9]\{10,\}' livreto/index.html | sed 's|wa\.me/||' | grep -qv "^$CANON$"; then
+            echo "espelho em dia"
+          else
+            echo "::warning::livreto/index.html ainda não reflete $CANON — o workflow livreto.yml deve regenerá-lo neste push. Se persistir no próximo run, o espelho quebrou."
+          fi
+
+      - name: O telefone do dado estruturado bate com o canônico
+        run: |
+          CANON=$(cat .whatsapp | tr -d '[:space:]')
+          RUINS=$(grep -rIoh '"telephone" *: *"[^"]*"' --include='*.html' . \
+                  | grep -v "+$CANON" || true)
+          if [ -n "$RUINS" ]; then
+            echo "::error::JSON-LD com telefone que não é +$CANON: $RUINS"
+            exit 1
+          fi
+          echo "nenhum telefone divergente no JSON-LD"

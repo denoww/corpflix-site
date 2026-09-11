@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TV para comércio e sala de espera — Corpflix</title>
+<meta name="description" content="A TV da sua sala de espera vendendo o seu cardápio e a sua promoção, no lugar da novela. Restaurante, clínica, academia, salão, pet shop e loja: você manda, a gente publica por dia e horário e vigia a tela." />
+<meta name="robots" content="index, follow, max-image-preview:large" />
+<link rel="canonical" href="https://www.corpflix.com.br/comercio" />
+
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png" />
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png" />
+<link rel="manifest" href="/manifest.json" />
+<meta name="theme-color" content="#0A0716" />
+
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="Corpflix" />
+<meta property="og:title" content="Corpflix no comércio — quem está esperando, está olhando" />
+<meta property="og:description" content="A tela da sua sala de espera vendendo o seu cardápio e a sua promoção. Você manda, a gente publica e vigia." />
+<meta property="og:url" content="https://www.corpflix.com.br/comercio" />
+<meta property="og:locale" content="pt_BR" />
+<meta property="og:image" content="https://www.corpflix.com.br/assets/og.jpg" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content="Clientes esperando numa pizzaria, com a TV da parede mostrando o cardápio e as notícias." />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Corpflix no comércio — quem está esperando, está olhando" />
+<meta name="twitter:description" content="A tela da sua sala de espera vendendo o seu cardápio e a sua promoção. Você manda, a gente publica e vigia." />
+<meta name="twitter:image" content="https://www.corpflix.com.br/assets/og.jpg" />
+
+<!-- ⚠️ Sem Google Fonts e sem analytics, de propósito. A pilha de fonte começa em
+     -apple-system/BlinkMacSystemFont, que resolvem antes de chegar em 'Inter' — o CSS
+     de terceiro seria render-blocking por uma fonte quase nunca usada, e entregaria o
+     IP de cada visitante a um terceiro (a /privacidade promete que isso não acontece). -->
+<link rel="preload" as="image" href="/assets/publico-comercio.jpg" fetchpriority="high" />
+<style>
+/* =========================================================================
+   Corpflix — sistema visual
+   Gramática herdada dos sites irmãos (que herdaram da apple.com):
+   superfícies alternando (branco → névoa → noite), display grande
+   com tracking NÃO-monotônico, peso 600 (nunca 700), pill 980px, cards sem
+   sombra com radius 28, nav de vidro de 52px e movimento de 30px em 900ms
+   que dispara uma vez.
+   A marca é o roxo→azul do app que roda na TV; as seções escuras são a cor
+   de fundo desse app (--noite / --noite-2), não preto puro.
+   ========================================================================= */
+:root{
+  /* marca — nomes e valores do contrato, NÃO renomear */
+  --roxo:#9100FF;       /* primária; branco sobre ela = 5,76:1, pode ser botão */
+  --roxo-esc:#6A00E0;   /* hover e texto pequeno colorido sobre claro (7,81:1) */
+  --roxo-leve:#F3E8FF;  /* fundo de selo */
+  --azul:#1886FF;       /* ⚠️ SÓ dentro do gradiente: texto sobre ele dá 3,56:1 */
+  --grad:linear-gradient(90deg,#9100FF,#1886FF);
+  --noite:#0A0716;
+  --noite-2:#1F0E36;
+
+  /* derivados para TEXTO sobre fundo escuro. O --roxo puro sobre --noite dá
+     ~3,4:1 e reprova o AA em texto normal; o lilás passa de 9:1. O --grad-luz
+     é o mesmo gradiente clareado, só para palavra de destaque em display. */
+  --lilas:#C9A7FF;
+  --grad-luz:linear-gradient(90deg,#C08BFF,#6FB4FF);
+
+  /* neutros — iguais aos das irmãs */
+  --branco:#fff;
+  --nevoa:#f5f5f7;
+  --preto:#000;
+  --tinta:#1d1d1f;
+  --tinta-2:#6e6e73;
+  --claro:#f5f5f7;
+  --claro-2:#a1a1a6;
+  --linha:rgba(0,0,0,.10);
+  --linha-esc:rgba(255,255,255,.12);
+
+  --max:1080px;
+  --respiro:120px;
+  --nav-h:52px;
+  --ease:cubic-bezier(.45,0,.55,1);
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;
+  font-family:-apple-system,BlinkMacSystemFont,'Inter','Segoe UI',Roboto,sans-serif;
+  color:var(--tinta);background:var(--branco);
+  -webkit-font-smoothing:antialiased;line-height:1.47;
+  overflow-x:hidden;
+}
+img{max-width:100%;height:auto;display:block}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--roxo);outline-offset:3px;border-radius:6px}
+::selection{background:var(--roxo);color:#fff}
+
+/* tracking não-monotônico: negativo no display, ~zero no meio, positivo no miúdo */
+h1{font-size:clamp(40px,7vw,80px);font-weight:600;letter-spacing:-.015em;line-height:1.05;margin:0 0 .4em}
+h2{font-size:clamp(30px,4.6vw,48px);font-weight:600;letter-spacing:-.003em;line-height:1.1;margin:0 0 .5em}
+h3{font-size:21px;font-weight:600;letter-spacing:.011em;margin:0 0 .35em}
+p{font-size:17px;letter-spacing:-.022em;margin:0 0 1em}
+.lead{font-size:clamp(19px,2.2vw,24px);letter-spacing:-.01em;color:var(--tinta-2);max-width:46ch}
+
+.wrap{max-width:var(--max);margin:0 auto;padding:0 24px}
+.sec{padding:var(--respiro) 0}
+.sec-nevoa{background:var(--nevoa)}
+.sec-preta{background:var(--noite);color:var(--claro)}
+.sec-preta.alt{background:var(--noite-2)}
+.sec-preta .lead,.sec-preta .sub{color:var(--claro-2)}
+.sec-preta h2,.sec-preta h3{color:var(--claro)}
+/* Sem isto, clicar numa âncora do nav cola o título embaixo da barra fixa. */
+section[id]{scroll-margin-top:calc(var(--nav-h) + 12px)}
+
+/* palavra de destaque em gradiente — só em display (texto grande) */
+.g{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.sec-preta .g,.hero .g{background-image:var(--grad-luz)}
+
+.olho{display:inline-block;font-size:14px;font-weight:600;letter-spacing:.02em;color:var(--roxo-esc);margin:0 0 12px}
+.sec-preta .olho,.hero .olho{color:var(--lilas)}
+
+/* ---------- NAV DE VIDRO (escuro: é a cor do app da TV) ---------- */
+.nav{
+  position:sticky;top:0;z-index:100;height:var(--nav-h);
+  background:rgba(10,7,22,.9);
+  backdrop-filter:saturate(180%) blur(20px);
+  -webkit-backdrop-filter:saturate(180%) blur(20px);
+  border-bottom:1px solid rgba(255,255,255,.08);
+  color:var(--claro);
+}
+.nav-in{display:flex;align-items:center;justify-content:space-between;gap:12px;height:var(--nav-h);max-width:var(--max);margin:0 auto;padding:0 24px}
+.brand{display:flex;align-items:center;gap:8px;font-weight:600;font-size:17px;letter-spacing:-.02em;text-decoration:none;color:#fff}
+.brand img{width:24px;height:24px;border-radius:6px;flex-shrink:0}
+.nav-r{display:flex;align-items:center;gap:22px}
+.nav-links{display:flex;gap:26px;align-items:center}
+.nav-links a{font-size:13px;color:var(--claro);opacity:.8;text-decoration:none;transition:opacity .2s}
+.nav-links a:hover,.nav-links a[aria-current="page"]{opacity:1;color:var(--lilas)}
+.nav-cta{background:var(--roxo);color:#fff;padding:6px 14px;border-radius:980px;font-size:13px;font-weight:500;text-decoration:none;white-space:nowrap;transition:background .2s}
+.nav-cta:hover{background:var(--roxo-esc)}
+/* Abaixo de 760px o menu do meio sai e sobram marca + CTA — hambúrguer para
+   4 links é peso de JS por nada. As 3 páginas de público seguem alcançáveis
+   pelos cards da home e pelo rodapé. */
+@media (max-width:760px){ .nav-links{display:none} }
+
+/* pill: 980px de raio, peso 400, hover só troca cor */
+.btn{
+  display:inline-block;border-radius:980px;padding:12px 22px;font-size:17px;font-weight:400;
+  text-decoration:none;background:var(--roxo);color:#fff;border:0;cursor:pointer;
+  transition:background .2s ease;
+}
+.btn:hover{background:var(--roxo-esc)}
+.btn-ghost{background:transparent;color:var(--roxo-esc);box-shadow:inset 0 0 0 1px currentColor}
+.btn-ghost:hover{background:var(--roxo-leve)}
+.sec-preta .btn-ghost,.hero .btn-ghost{color:var(--lilas)}
+.sec-preta .btn-ghost:hover,.hero .btn-ghost:hover{background:rgba(201,167,255,.10)}
+.acoes{display:flex;gap:12px;flex-wrap:wrap;margin-top:28px}
+.link-mais{color:var(--roxo-esc);font-size:17px;text-decoration:none;display:inline-flex;align-items:center;gap:3px}
+.link-mais::after{content:"›";font-size:21px;line-height:1;transition:transform .28s var(--ease)}
+a:hover .link-mais::after,.link-mais:hover::after{transform:translateX(3px)}
+
+/* ---------- HERO (noite, com o brilho roxo→azul do app) ---------- */
+.hero{
+  padding:96px 0 var(--respiro);color:var(--claro);
+  background:
+    radial-gradient(60% 55% at 85% 0%,rgba(145,0,255,.34),transparent 70%),
+    radial-gradient(45% 40% at 0% 100%,rgba(24,134,255,.16),transparent 70%),
+    var(--noite);
+}
+.hero h1{color:#fff}
+.hero .lead{color:var(--claro-2);margin-bottom:0}
+.hero .publico{font-size:14px;color:var(--claro-2);letter-spacing:.01em;margin:18px 0 0}
+/* A foto entra numa "tela": moldura de 2px no gradiente da marca. É a TV. */
+.tela{margin:56px 0 0;padding:2px;border-radius:28px;background:var(--grad)}
+.tela img{width:100%;border-radius:26px;aspect-ratio:16/9;object-fit:cover;object-position:center 35%}
+@media(max-width:860px){.tela img{aspect-ratio:4/3}}
+/* hero das páginas de público: texto e foto lado a lado no desktop */
+.hero-row{display:grid;grid-template-columns:1.05fr .95fr;gap:48px;align-items:center}
+.hero-row .tela{margin:0}
+.hero-row .tela img{aspect-ratio:4/3}
+@media(max-width:860px){.hero-row{grid-template-columns:1fr;gap:40px}}
+
+/* cards: radius 28, SEM sombra — a separação é por contraste */
+.grade{display:grid;gap:20px;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));margin-top:48px}
+.card{background:var(--nevoa);border-radius:28px;padding:28px}
+/* 4 cards: 4 colunas no desktop, sem card órfão numa linha sozinho */
+.grade-4{grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+.sec-nevoa .card{background:var(--branco)}
+.sec-preta .card{background:rgba(255,255,255,.05);box-shadow:inset 0 0 0 1px var(--linha-esc)}
+.card p{color:var(--tinta-2);margin:0}
+.sec-preta .card p{color:var(--claro-2)}
+.card h3::before{content:"";display:block;width:28px;height:3px;border-radius:3px;background:var(--grad);margin-bottom:16px}
+
+/* ---------- públicos: foto + título + link ---------- */
+.publicos{display:grid;gap:24px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));margin-top:48px}
+.pub{display:block;text-decoration:none;color:inherit}
+.pub img{width:100%;border-radius:20px;aspect-ratio:4/3;object-fit:cover;transition:transform .5s var(--ease)}
+.pub:hover img{transform:scale(1.015)}
+.pub b{display:block;margin:18px 0 6px;font-size:21px;font-weight:600;letter-spacing:.011em}
+.pub span.txt{display:block;font-size:16px;color:var(--tinta-2);letter-spacing:-.01em;margin-bottom:10px}
+
+/* ---------- vigia: o painel de sinal em HTML/CSS (não é imagem) ---------- */
+.vigia{margin:48px 0 0;border-radius:28px;padding:10px 28px 22px;background:rgba(255,255,255,.04);box-shadow:inset 0 0 0 1px var(--linha-esc);font-variant-numeric:tabular-nums}
+.vigia-lin{display:grid;grid-template-columns:auto 1fr auto;gap:14px;align-items:center;padding:16px 0;border-bottom:1px solid var(--linha-esc)}
+.vigia-lin:last-of-type{border-bottom:0}
+.vigia-lin b{font-weight:500;font-size:16px;color:var(--claro);display:block}
+.vigia-lin small{font-size:13px;color:var(--claro-2)}
+.vigia-st{font-size:13px;color:var(--claro-2);text-align:right}
+.vigia-st.fora{color:#FFC266}
+.ponto{width:10px;height:10px;border-radius:50%;background:#3DD68C;position:relative}
+.ponto::after{content:"";position:absolute;inset:0;border-radius:50%;background:#3DD68C;animation:pulso 3s var(--ease) infinite}
+.ponto.fora{background:#FFB547}
+.ponto.fora::after{display:none}
+@keyframes pulso{0%{transform:scale(1);opacity:.6}40%{transform:scale(2.6);opacity:0}100%{opacity:0}}
+.vigia figcaption{margin-top:14px;font-size:13px;color:var(--claro-2)}
+@media(max-width:520px){.vigia{padding:6px 18px 18px}.vigia-lin{grid-template-columns:auto 1fr}.vigia-st{grid-column:2;text-align:left}}
+
+/* ---------- como funciona: passos numerados ---------- */
+.passos{display:grid;gap:20px;margin-top:48px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+.passo{padding-top:18px;border-top:2px solid transparent;border-image:var(--grad) 1}
+.passo .num{font-size:13px;font-weight:600;color:var(--roxo-esc);letter-spacing:.06em}
+.passo h3{font-size:19px;letter-spacing:-.01em;margin:10px 0 8px}
+.passo p{color:var(--tinta-2);margin:0;font-size:16px;line-height:1.5}
+.passo .quem{display:inline-block;font-size:11px;font-weight:600;letter-spacing:.04em;background:var(--roxo-leve);color:var(--roxo-esc);border-radius:980px;padding:3px 9px;margin-left:8px;vertical-align:2px}
+
+/* ---------- a TV em HTML/CSS (layout "barra esquerda + inferior") ----------
+   Doutrina das irmãs: foto = gerador de imagem, INTERFACE = HTML/CSS. As
+   unidades cqw fazem a tela inteira escalar junto, até em 360px. */
+.tvmock{margin:48px auto 0;max-width:860px}
+.tv{
+  container-type:inline-size;aspect-ratio:16/9;border-radius:22px;overflow:hidden;
+  display:grid;grid-template-columns:24% 1fr;grid-template-rows:1fr 13%;
+  background:var(--noite-2);color:#fff;box-shadow:0 0 0 2px var(--noite),0 0 0 4px rgba(145,0,255,.35);
+}
+.tv-lado{display:flex;flex-direction:column;justify-content:space-between;padding:4cqw 3cqw;gap:2cqw}
+.tv-logo{font-size:2.2cqw;font-weight:600;letter-spacing:.02em;opacity:.9}
+.tv-clima b{display:block;font-size:6cqw;font-weight:600;line-height:1}
+.tv-clima span,.tv-cot span{font-size:1.9cqw;color:#D9C8FF;display:block}
+.tv-cot span{padding:.6cqw 0;border-top:1px solid rgba(255,255,255,.12)}
+.tv-main{background:var(--grad);display:flex;flex-direction:column;justify-content:flex-end;padding:5cqw}
+.tv-main span{font-size:2.4cqw;opacity:.9}
+.tv-main b{font-size:5.4cqw;font-weight:600;line-height:1.05;letter-spacing:-.01em;max-width:18ch}
+.tv-rodape{grid-column:1/-1;display:flex;align-items:center;gap:1.6cqw;padding:0 3cqw;background:var(--noite);font-size:2cqw;color:#E6DBFF;white-space:nowrap;overflow:hidden}
+.tv-rodape .tag{background:var(--roxo);color:#fff;border-radius:980px;padding:.4cqw 1.4cqw;font-weight:600}
+.tvmock figcaption{margin-top:14px;font-size:13px;color:var(--tinta-2)}
+
+/* ---------- declaração em névoa ---------- */
+.credo{font-size:clamp(28px,4.2vw,44px);font-weight:600;letter-spacing:-.003em;line-height:1.15;margin:0;max-width:26ch}
+
+/* ---------- FAQ ---------- */
+details{border-top:1px solid var(--linha);padding:20px 0}
+details summary{font-size:19px;font-weight:500;letter-spacing:-.01em;cursor:pointer;list-style:none;padding-right:28px;position:relative}
+details summary::-webkit-details-marker{display:none}
+details summary::after{content:'+';position:absolute;right:0;top:0;color:var(--tinta-2);font-weight:400}
+details[open] summary::after{content:'–'}
+details p{margin:14px 0 0;color:var(--tinta-2);max-width:70ch}
+
+.tambem{display:flex;gap:18px;flex-wrap:wrap;align-items:center;margin-top:28px;font-size:15px;color:var(--tinta-2)}
+.tambem a{color:var(--roxo-esc)}
+
+/* movimento: sobe 30px, 900ms, uma vez só */
+.rev{opacity:0;transform:translateY(30px);transition:opacity .9s var(--ease),transform .9s var(--ease)}
+.rev.on{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){
+  .rev{opacity:1;transform:none;transition:none}
+  .ponto::after{animation:none}
+  .pub img{transition:none}
+}
+
+/* ---------- rodapé ---------- */
+.ft{background:var(--noite);color:var(--claro-2);padding:56px 0;font-size:14px;letter-spacing:0}
+.ft .marca{display:inline-block;margin-bottom:14px;text-decoration:none}
+.ft .marca img{height:22px;width:auto}
+.ft .links{display:flex;gap:18px;flex-wrap:wrap;margin-top:14px}
+/* escopo: sem o seletor restrito, o sublinhado pega o logotipo do rodapé */
+.ft .links a{color:var(--claro);text-decoration:underline}
+.ft .copy{margin-top:22px;font-size:13px}
+
+@media (max-width:820px){
+  :root{--respiro:88px}
+  .hero{padding-top:64px}
+}
+@media (max-width:400px){
+  .wrap,.nav-in{padding:0 18px}
+  .card{padding:24px}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     ⛔ NÃO PROMETER nesta página (conferido no ERP em app/services/publicidade/ e
+     app/models/publicidade/, 2026-09-11 — não existe no sistema):
+       • vetar categoria ou anunciante (não há entidade de anunciante nem trava);
+       • relatório / prova de veiculação / contagem de exibições (a coluna
+         `exibidos` existe e nada no backend a incrementa);
+       • cobrança, boleto ou repasse de anunciante; preço por exibição (o
+         R$ 0,025 é conta do Angular, não persiste);
+       • "você mesmo publica pelo celular/painel" — o módulo é gateado
+         (`Publicidade.bloqueado_ao?`) e quem publica é o nosso time:
+         escreva "você manda, a gente publica";
+       • aniversariantes ou comunicado do ERP indo AUTOMÁTICO para a TV;
+       • número de disponibilidade, "nunca falha", "garantimos";
+       • prova social inventada (depoimento, nº de clientes, nota) e concorrente pelo nome.
+     O alerta de TV fora do ar vai para o NOSSO time (Slack #tvs-admin), não para
+     o cliente — escreva "a gente é avisada", nunca "você recebe o alerta".
+     ═══════════════════════════════════════════════════════════════════════════ -->
+
+<nav class="nav" aria-label="Navegação principal">
+  <div class="nav-in">
+    <a class="brand" href="/">
+      <img src="/assets/brand-mark.png" width="24" height="24" alt="" />
+      <span>Corpflix</span>
+    </a>
+    <span class="nav-r">
+      <span class="nav-links">
+        <a href="/comercio" aria-current="page">Comércio</a>
+        <a href="/corporativa">Empresas</a>
+        <a href="/elevador">Condomínios</a>
+        <a href="/livreto/">Livreto</a>
+      </span>
+      <a class="nav-cta" href="https://wa.me/5562985673142?text=Ol%C3%A1%21%20Vim%20pelo%20menu%20do%20site%20do%20Corpflix%20e%20quero%20saber%20mais.">Falar no WhatsApp</a>
+    </span>
+  </div>
+</nav>
+<main>
+<section class="hero" id="topo">
+  <div class="wrap hero-row">
+    <div class="rev">
+      <span class="olho">TV no seu ponto</span>
+      <h1>Quem está esperando, está <span class="g">olhando</span>.</h1>
+      <p class="lead">A tela da sua sala de espera pode vender o seu cardápio e a sua promoção — em vez da novela. A gente instala, publica o que você mandar e vigia.</p>
+      <div class="acoes">
+        <a class="btn" href="https://wa.me/5562985673142?text=Ol%C3%A1%21%20Vim%20pelo%20site%20do%20Corpflix%20e%20quero%20uma%20tela%20no%20meu%20com%C3%A9rcio.">Falar no WhatsApp</a>
+        <a class="btn btn-ghost" href="#no-ar">Ver o monitoramento</a>
+      </div>
+      <p class="publico">Restaurante · clínica · academia · salão · pet shop · loja</p>
+    </div>
+    <figure class="tela rev">
+      <img src="/assets/publico-comercio.jpg" alt="Clientes esperando numa pizzaria, com a TV da parede mostrando o cardápio e as notícias." width="1200" height="900" fetchpriority="high" decoding="async" />
+    </figure>
+  </div>
+</section>
+
+<section class="sec sec-nevoa">
+  <div class="wrap rev">
+    <p class="credo">A tela que já está na parede pode <span class="g">trabalhar pelo seu negócio</span> — e não pelo de outro.</p>
+  </div>
+</section>
+
+<section id="tela" class="sec">
+  <div class="wrap rev">
+    <span class="olho">A tela</span>
+    <h2>A sua marca no loop, na hora que vende.</h2>
+    <p class="lead">O cliente sentado esperando é a audiência mais fácil que existe. Ela só precisa ver alguma coisa sua.</p>
+    <div class="grade">
+      <div class="card"><h3>A tela deixa de ser TV aberta</h3><p>Na sua sala de espera passa o que está na sua grade: nada de novela nem de jornal da TV aberta.</p></div>
+      <div class="card"><h3>Sua marca o tempo todo</h3><p>Cardápio, promoção do dia, serviço novo, vídeo institucional — o que você quer vender, rodando em loop.</p></div>
+      <div class="card"><h3>Você manda, a gente publica</h3><p>Mandou a peça nova pelo WhatsApp, o nosso time publica e a tela troca em segundos. Ninguém vai até lá com pendrive.</p></div>
+      <div class="card"><h3>Promoção com hora marcada</h3><p>O happy hour entra às dezoito, o almoço executivo só ao meio-dia — cada peça com os seus dias e horários.</p></div>
+      <div class="card"><h3>Sala de espera que informa</h3><p>Notícias, clima e cotações preenchem o intervalo — e o cliente para de olhar o relógio.</p></div>
+      <div class="card"><h3>Uma tela ou a rede inteira</h3><p>Franquia e rede ficam no mesmo painel, com o conteúdo de cada loja. A promoção de uma unidade não precisa aparecer nas outras.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="no-ar" class="sec sec-preta">
+  <div class="wrap rev">
+    <span class="olho">No ar</span>
+    <h2>Tela apagada é <span class="g">dinheiro parado</span>.</h2>
+    <p class="lead">Uma TV desligada na parede não avisa ninguém — e quem percebe primeiro costuma ser quem está esperando. A do Corpflix avisa a gente.</p>
+
+    <!-- Peça viva: o painel de sinal em HTML/CSS. ⚠️ Legenda obrigatória — sem ela os
+         nomes abaixo leem como telas reais de cliente, e a casa não fabrica prova social. -->
+    <figure class="vigia rev" role="img" aria-label="Exemplo ilustrativo do painel de sinal: três telas no ar mandando sinal a cada três segundos e uma fora do ar há mais de uma hora, com alerta enviado ao time.">
+      <div class="vigia-lin"><span class="ponto"></span><span><b>Recepção</b><small>Clínica · horizontal</small></span><span class="vigia-st" data-sinal="1">sinal há 1 s</span></div>
+      <div class="vigia-lin"><span class="ponto"></span><span><b>Refeitório</b><small>Empresa · horizontal</small></span><span class="vigia-st" data-sinal="2">sinal há 2 s</span></div>
+      <div class="vigia-lin"><span class="ponto"></span><span><b>Elevador social</b><small>Condomínio · vertical</small></span><span class="vigia-st" data-sinal="0">sinal agora</span></div>
+      <div class="vigia-lin"><span class="ponto fora"></span><span><b>Vitrine</b><small>Loja · vertical</small></span><span class="vigia-st fora">fora do ar há 1h04 · time avisado</span></div>
+      <figcaption>Exemplo ilustrativo — os nomes não são de telas reais.</figcaption>
+    </figure>
+
+    <div class="grade">
+      <div class="card"><h3>Sinal a cada três segundos</h3><p>Cada TV avisa o nosso servidor que está no ar, o dia inteiro. Quando ela se cala, é o primeiro sinal de problema.</p></div>
+      <div class="card"><h3>Passou de uma hora, a gente sabe</h3><p>Tela fora do ar por mais de uma hora vira alerta para o nosso time. E todo dia de manhã sai um resumo de quem caiu e de quem voltou.</p></div>
+      <div class="card"><h3>Reinício à distância</h3><p>Travou? O player é reiniciado daqui, sem ninguém subir até o elevador ou ir até a loja.</p></div>
+      <div class="card"><h3>Diagnóstico sem visita</h3><p>Versão do player, espaço livre, hora em que o aparelho ligou e falhas registradas — a gente vê tudo sem ir até o local.</p></div>
+      <div class="card"><h3>Aguenta a internet cair</h3><p>O conteúdo fica guardado na própria TV. O link cai e a tela continua tocando o que já tinha.</p></div>
+      <div class="card"><h3>Sem servidor para comprar</h3><p>O conteúdo vive na nuvem. Na ponta, uma TV com Android ou um aparelho pequeno ligado à tela.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="como" class="sec sec-nevoa">
+  <div class="wrap rev">
+    <span class="olho">Como funciona</span>
+    <h2>Quatro passos. Três são com a gente.</h2>
+    <p class="lead">Ninguém da sua equipe aprende sistema novo. Você conta o que quer mostrar e quando — o resto é nosso.</p>
+    <div class="passos">
+      <div class="passo rev">
+        <span class="num">01</span><span class="quem">a gente</span>
+        <h3>Instala o player na TV</h3>
+        <p>Na TV que você já tem, quando ela dá conta, ou num aparelho pequeno ligado a ela — conectado à internet do local.</p>
+      </div>
+      <div class="passo rev">
+        <span class="num">02</span><span class="quem">você</span>
+        <h3>Manda o conteúdo</h3>
+        <p>Vídeo, imagem, áudio ou um recado escrito. Pelo WhatsApp, do jeito que já estiver.</p>
+      </div>
+      <div class="passo rev">
+        <span class="num">03</span><span class="quem">a gente</span>
+        <h3>Monta a grade</h3>
+        <p>Cada peça entra nos dias e horários que você pediu. Publicado, a tela troca em segundos — sem ninguém ir até lá com pendrive.</p>
+      </div>
+      <div class="passo rev">
+        <span class="num">04</span><span class="quem">a gente</span>
+        <h3>Vigia a tela</h3>
+        <p>Sinal a cada três segundos, alerta quando ela se cala por mais de uma hora e reinício à distância quando o player trava.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="duvidas" class="sec">
+  <div class="wrap rev">
+    <span class="olho">Dúvidas</span>
+    <h2>O que perguntam antes de ligar a tela.</h2>
+
+    <details><summary>Posso trocar a promoção no meio da semana?</summary>
+      <p>Pode. Mande a peça nova pelo WhatsApp e diga a partir de quando ela vale. A gente publica e a tela troca em segundos, sem ninguém ir até a loja.</p></details>
+
+    <details><summary>Tenho mais de uma unidade. Cada loja mostra a sua promoção?</summary>
+      <p>Mostra. Cada TV tem a sua grade, e a rede inteira fica no mesmo painel. A promoção de uma unidade não precisa aparecer nas outras.</p></details>
+
+    <details><summary>Posso passar o anúncio de um parceiro na minha tela?</summary>
+      <p>Pode, se você combinar com ele: a gente põe a peça na grade no horário que você pedir. O Corpflix não cobra o parceiro por você e não emite relatório de exibição — esse combinado corre por fora.</p></details>
+
+    <details><summary>O cliente precisa baixar alguma coisa?</summary>
+      <p>Não. A tela só exibe: ninguém instala nada, ninguém faz cadastro, e o player não coleta dado de quem está assistindo.</p></details>
+  </div>
+</section>
+
+<section class="sec sec-nevoa" style="padding-block:56px">
+  <div class="wrap">
+    <div class="tambem"><span>O Corpflix também roda em:</span><a href="/corporativa">Empresas</a><a href="/elevador">Condomínios</a></div>
+  </div>
+</section>
+
+<section id="falar" class="sec">
+  <div class="wrap rev" style="text-align:center">
+    <h2>Vamos ligar a tela do seu ponto.</h2>
+    <p class="lead" style="margin:0 auto 4px">Conte onde ela fica e o que você quer mostrar — o resto a gente resolve.</p>
+    <div class="acoes" style="justify-content:center">
+      <a class="btn" href="https://wa.me/5562985673142?text=Ol%C3%A1%21%20Vim%20pelo%20site%20do%20Corpflix%20e%20quero%20uma%20tela%20no%20meu%20com%C3%A9rcio.">Falar no WhatsApp</a>
+      <a class="btn btn-ghost" href="/livreto/">Ver o livreto</a>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="ft">
+  <div class="wrap">
+    <a class="marca" href="/"><img src="/assets/wordmark.png" alt="Corpflix" width="608" height="119" loading="lazy" decoding="async" /></a>
+    <p style="margin:0;max-width:56ch">Mídia indoor gerenciada: a gente instala o player na TV, publica o que você mandar e vigia a tela. Um produto do Seu Condomínio.</p>
+    <div class="links">
+      <!-- Prefill próprio no rodapé: o texto é o único sinal de origem que atravessa o
+           WhatsApp (querystring não é repassada) e chega como a primeira mensagem. -->
+      <a href="https://wa.me/5562985673142?text=Ol%C3%A1%21%20Vim%20pelo%20rodap%C3%A9%20do%20site%20do%20Corpflix%20e%20quero%20saber%20mais.">WhatsApp</a>
+      <a href="/comercio">Comércio</a>
+      <a href="/corporativa">Empresas</a>
+      <a href="/elevador">Condomínios</a>
+      <a href="/livreto/">Livreto</a>
+      <a href="/livreto.pdf">Livreto em PDF</a>
+      <a href="/privacidade">Privacidade</a>
+    </div>
+    <p class="copy">© 2026 Corpflix</p>
+  </div>
+</footer>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://www.corpflix.com.br/#org",
+      "name": "Corpflix",
+      "url": "https://www.corpflix.com.br/",
+      "logo": "https://www.corpflix.com.br/assets/brand-mark.png",
+      "telephone": "+5562985673142",
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "telephone": "+5562985673142",
+        "contactType": "sales",
+        "areaServed": "BR",
+        "availableLanguage": "Portuguese"
+      },
+      "parentOrganization": {
+        "@type": "Organization",
+        "name": "Seu Condomínio",
+        "url": "https://www.seucondominio.com.br/"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Início",
+          "item": "https://www.corpflix.com.br/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Comércio",
+          "item": "https://www.corpflix.com.br/comercio"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Posso trocar a promoção no meio da semana?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Pode. Mande a peça nova pelo WhatsApp e diga a partir de quando ela vale. A gente publica e a tela troca em segundos, sem ninguém ir até a loja."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Tenho mais de uma unidade. Cada loja mostra a sua promoção?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Mostra. Cada TV tem a sua grade, e a rede inteira fica no mesmo painel. A promoção de uma unidade não precisa aparecer nas outras."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Posso passar o anúncio de um parceiro na minha tela?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Pode, se você combinar com ele: a gente põe a peça na grade no horário que você pedir. O Corpflix não cobra o parceiro por você e não emite relatório de exibição — esse combinado corre por fora."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "O cliente precisa baixar alguma coisa?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Não. A tela só exibe: ninguém instala nada, ninguém faz cadastro, e o player não coleta dado de quem está assistindo."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+
+<script>
+// reveal: dispara uma vez e solta o observer (o elemento não volta a animar)
+(function(){
+  var alvos = document.querySelectorAll('.rev');
+  if (!('IntersectionObserver' in window)) {
+    for (var i=0;i<alvos.length;i++) alvos[i].classList.add('on');
+    return;
+  }
+  var io = new IntersectionObserver(function(entradas){
+    entradas.forEach(function(e, i){
+      if (!e.isIntersecting) return;
+      var el = e.target;
+      setTimeout(function(){ el.classList.add('on'); }, i * 150); // stagger 150ms
+      io.unobserve(el);
+    });
+  }, {rootMargin:'0px 0px -10% 0px', threshold:0.05});
+  for (var j=0;j<alvos.length;j++) io.observe(alvos[j]);
+})();
+
+// vigia: o "sinal há N s" anda de 0 a 3 e volta, como o heartbeat real de 3 s.
+// É ilustrativo (a legenda diz) — nenhum número aqui vem de TV de cliente.
+(function(){
+  var sinais = document.querySelectorAll('[data-sinal]');
+  if (!sinais.length) return;
+  setInterval(function(){
+    for (var i=0;i<sinais.length;i++){
+      var s = (+sinais[i].getAttribute('data-sinal') + 1) % 3;
+      sinais[i].setAttribute('data-sinal', s);
+      sinais[i].textContent = s === 0 ? 'sinal agora' : 'sinal há ' + s + ' s';
+    }
+  }, 1000);
+})();
+</script>
+
+</body>
+</html>

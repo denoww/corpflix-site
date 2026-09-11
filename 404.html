@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Página não encontrada — Corpflix</title>
+<meta name="description" content="A página que você procurou não existe mais ou o endereço tem um erro de digitação." />
+<!-- 404 não deve ser indexada, mas os links DEVEM ser seguidos: é assim que o
+     crawler reencontra as páginas boas a partir de um link velho quebrado. -->
+<meta name="robots" content="noindex, follow" />
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png" />
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png" />
+<link rel="manifest" href="/manifest.json" />
+<meta name="theme-color" content="#000000" />
+<style>
+  /* Sem fonte de terceiro aqui de propósito: numa 404 o custo de um stylesheet
+     bloqueante externo não se paga. -apple-system já é o topo do stack do site. */
+  :root{--roxo:#9100FF;--roxo-esc:#6A00E0}
+  *{box-sizing:border-box}
+  body{
+    margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;
+    background:#f5f5f7;color:#1d1d1f;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased;padding:24px;
+  }
+  main{max-width:600px;text-align:center}
+  .eyebrow{
+    font-size:17px;letter-spacing:-.022em;color:#6e6e73;margin:0 0 12px;
+  }
+  h1{
+    /* tracking negativo só em tamanho grande — abaixo de 20px a Apple inverte o sinal */
+    font-size:clamp(32px,6vw,48px);line-height:1.08;letter-spacing:-.015em;
+    font-weight:600;margin:0 0 16px;
+  }
+  p.sub{font-size:19px;line-height:1.5;color:#6e6e73;margin:0 0 32px}
+  nav{display:flex;flex-wrap:wrap;gap:12px;justify-content:center}
+  a.btn{
+    display:inline-block;border-radius:980px;padding:12px 22px;font-size:17px;
+    font-weight:400;text-decoration:none;transition:background .2s,color .2s;
+  }
+  /* branco sobre --roxo = 5,76:1 (AA); o hover escurece em vez de desbotar */
+  a.cheio{background:var(--roxo);color:#fff}
+  a.cheio:hover{background:var(--roxo-esc)}
+  a.linha{border:1px solid #d2d2d7;color:#1d1d1f}
+  a.linha:hover{background:#ebebef}
+  small{display:block;margin-top:40px;font-size:14px;color:#6e6e73}
+  small a{color:#6e6e73}
+</style>
+</head>
+<body>
+  <main>
+    <p class="eyebrow">Erro 404</p>
+    <h1>Essa página não existe.</h1>
+    <p class="sub">O endereço pode ter um erro de digitação, ou a página saiu do ar. Os caminhos abaixo funcionam.</p>
+    <nav>
+      <a class="btn cheio" href="/">Ir para a home</a>
+      <a class="btn linha" href="/comercio">Comércio</a>
+      <a class="btn linha" href="/corporativa">Empresa</a>
+      <a class="btn linha" href="/elevador">Condomínio</a>
+      <a class="btn linha" href="/livreto/">Ver o livreto</a>
+    </nav>
+    <small>corpflix<a href="/" style="text-decoration:none">.com.br</a></small>
+  </main>
+</body>
+</html>

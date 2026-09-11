@@ -1,0 +1,44 @@
+# Config do Jekyll — este site é HTML ESTÁTICO ESCRITO À MÃO, e continua sendo.
+#
+# POR QUE ISTO EXISTE
+# O GitHub Pages publica tudo que não começa com `.` ou `_`. Sem este arquivo, o
+# playbook interno e o gerador do livreto ficam SERVIDOS em texto plano:
+#   /CLAUDE.md, /livreto/content.py, /livreto/build.py, /livreto/build_pdf.sh
+# responderiam 200 (nas marcas irmãs, responderam). Isso é (a) o playbook, as
+# cicatrizes e as REGRAS DE COPY internas legíveis por qualquer um, incluindo
+# concorrente; (b) URLs finas gastando crawl budget e competindo com as páginas
+# que a gente quer que ranqueiem.
+#
+# O QUE ISTO **NÃO** FAZ
+# Não transforma as páginas em template. Arquivo SEM front matter é copiado
+# VERBATIM pelo Jekyll — então `index.html`, as páginas de público, `privacidade.html`
+# e o livreto seguem byte-a-byte iguais ao fonte, e a doutrina de verificação do
+# playbook continua valendo:  diff <(curl -s https://www.corpflix.com.br/index.html) index.html
+# Se algum dia esse diff quebrar depois de mexer aqui, REVERTA este arquivo: o
+# plano B é mover `build.py`/`content.py` para `_livreto/` (o `_` também não é
+# publicado) em vez de excluir por nome.
+#
+# Não há `plugins:` de propósito — o sitemap é gerado por CI (workflow `seo.yml`),
+# não pelo jekyll-sitemap, que só age se não existir `sitemap.xml` no fonte e
+# usaria mtime do runner como lastmod.
+
+url: "https://www.corpflix.com.br"
+
+exclude:
+  # playbook e planejamento — documentação interna, não conteúdo público
+  - CLAUDE.md
+  - README.md
+  - ROADMAP_livreto.md
+  - SEO_TERMOS_RESERVADOS.md
+  # gerador do livreto: a SAÍDA (livreto/index.html, livreto.pdf) é publicada; a
+  # fonte e o build, não
+  - livreto/content.py
+  - livreto/build.py
+  - livreto/build_pdf.sh
+  - livreto/CLAUDE.md
+  - livreto/__pycache__
+  # defaults do Jekyll que o `exclude` substituiria se eu não os repetisse
+  - Gemfile
+  - Gemfile.lock
+  - vendor
+  - node_modules
