@@ -38,10 +38,10 @@ RAIZ = Path(__file__).resolve().parents[2]
 
 # Sitemap do blog. OPCIONAL: hoje o Corpflix NÃO tem blog, então o índice lista só o
 # sitemap deste site. As marcas irmãs têm `blog.<marca>/sitemap` servido pelo Rails do ERP;
-# se um dia o Corpflix ganhar blog, é só apontar aqui a URL — SEM `.xml`: a rota do Rails
+# apontado em 12/09/2026, quando o blog virou indexável. Regra pra qualquer troca — SEM `.xml`: a rota do Rails
 # é `/sitemap` e `/sitemap.xml` responde 301, e sitemap entregue ao Google por redirect
 # vira aviso no Search Console (achado em 21/08/2026 nas irmãs, que herdaram o `.xml`).
-SITEMAP_BLOG: str | None = None
+SITEMAP_BLOG: str | None = 'https://blog.corpflix.com.br/sitemap'
 BASE = 'https://www.corpflix.com.br'
 
 # Copy que não pode existir em página pública. Mesma doutrina do guard do blog:
