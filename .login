@@ -1,1 +1,1 @@
-https://app.corpflix.tv/logar?no_layout=true
+https://app.corpflix.com.br/logar?no_layout=true

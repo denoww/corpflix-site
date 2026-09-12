@@ -4,13 +4,10 @@ Site institucional do **Corpflix** — TV de mídia indoor **gerenciada**: a gen
 player na TV do cliente, publica o conteúdo e monitora a tela. Estático, sem build de
 framework. Servido por **GitHub Pages** em `https://www.corpflix.com.br`.
 
-> ✅ **O site voltou pro `.com.br` em 11/09/2026** (a delegação do Registro.br saiu ~130 min depois
-> de salva; o site passou a tarde em `www.corpflix.tv`). O `corpflix.tv` voltou a ser só o redirect
-> do repo `denoww/corpflix-tv`.
-> ⏳ **Ainda no `.tv`:** o login (`.login`/`entrar.html` → `app.corpflix.tv`) e o blog
-> (`blog.corpflix.tv`, links no head/rodapé). Viram `.com.br` quando o cert `*.corpflix.com.br`
-> estiver no listener do ALB (blog) e houver tenant CloudFront pro `app.corpflix.com.br` (login) —
-> passos de console. Troque só esses literais (`app.corpflix.tv`, `blog.corpflix.tv`), nada mais.
+> ✅ **Tudo no `.com.br` desde 12/09/2026.** Em 11/09 o site passou a tarde em `www.corpflix.tv`,
+> porque o Registro.br segurou a delegação; quando ela saiu, site, login (`app.`) e blog (`blog.`)
+> voltaram pro domínio de venda. O `corpflix.tv` é só o redirect (repo `denoww/corpflix-tv`), e os
+> hosts `.tv` seguem resolvendo pra quem salvou link daquele dia.
 
 O produto é o **módulo de Publicidade do ERP SeuCondomínio** (`denoww/seucondominio`,
 `app/services/publicidade/` + `app/models/publicidade/`) vendido com marca própria. Isso
@@ -79,26 +76,23 @@ Não "conserte" tirando o `--http`: espere o cert e rode de novo.
 | Guardas de CI | `.github/workflows/{guarda,seo,livreto}.yml` + `.github/scripts/seo.py` |
 
 **Login (desde 11/09/2026): `.login` + `entrar.html` + pill "Entrar" no nav**, igual às irmãs.
-O destino é o login do ERP **com a marca Corpflix** no host `app.corpflix.tv` (caminho `/logar`,
+O destino é o login do ERP **com a marca Corpflix** no host `app.corpflix.com.br` (caminho `/logar`,
 com `?no_layout=true`) — o host é o tenant CloudFront `corpflix` na distribution multi-tenant `erpsc`, e o ERP reconhece
-a marca pelo bloco `CORPFLIX` de `app/services/institucional/marcas.rb` (o registry já tem os dois
-hosts, `app.corpflix.tv` e `app.corpflix.com.br`). Quem entra é quem **opera** as telas (o time
+a marca pelo bloco `CORPFLIX` de `app/services/institucional/marcas.rb` (o registry aceita os dois
+hosts, `app.corpflix.com.br` (canônico) e `app.corpflix.tv` (legado do dia da virada)). Quem entra é quem **opera** as telas (o time
 da casa e os tenants liberados); o cliente final continua mandando a peça pelo WhatsApp — por isso
 o "Entrar" é outline e o WhatsApp é o pill sólido.
 - **Fonte da verdade:** o dotfile `.login` (sem newline no fim). A URL aparece 2× no
   `entrar.html` (meta refresh + `href` do `#ir`); o `guarda.yml` reprova se divergirem, se a
   ponte sumir ou se o `index.html` deixar de linkar `/entrar`, e faz um `curl` no destino como
   **aviso** (não erro — push de site não trava por ERP em deploy).
-- **⏳ Volta pro `.com.br`:** junto com o resto do site — troque o host em `.login` e nos 2 literais do
-  `entrar.html` pra `app.corpflix.com.br` (o sed do topo deste arquivo pega os três).
   ⚠️ Não escreva a URL completa do login em `.md`/`.html` fora desses lugares: o `guarda.yml`
-  varre `*.md` também e reprova qualquer `https://…/logar…` que não seja idêntico ao `.login`. Do lado do ERP, trocar `app_host`/`site_url` do bloco `CORPFLIX` e criar
-  o domínio `app.corpflix.com.br` no tenant `corpflix` (cert `*.corpflix.com.br`).
+  varre `*.md` também e reprova qualquer `https://…/logar…` que não seja idêntico ao `.login`.
 - No nav escuro o texto do "Entrar" é o `--lilas` (#C9A7FF), não o `--roxo`: roxo sobre `--noite`
   reprova AA em 13px. Em ≤400px os dois pills encolhem o padding pra caber em 360px.
 
 **Blog (desde 11/09/2026):** é o `Auto::Marcas::Corpflix` do ERP (post diário automático), servido
-em `https://blog.corpflix.tv` (⏳ provisório — volta pro `.com.br` no mesmo `sed` do topo). O site só
+em `https://blog.corpflix.com.br`. O site só
 linka: `<link rel="alternate">` do RSS no head das 4 páginas e "Blog"/"RSS" no rodapé (a
 privacidade leva só "Blog"). Nasce **noindex** — o `SITEMAP_BLOG` do `seo.py` e o
 `sitemap-index.xml` só recebem o blog **no flip** pra indexável (≥5 diários + 1 pilar revisados),
