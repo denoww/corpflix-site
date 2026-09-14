@@ -13,13 +13,34 @@
 /* .tvdemo é a moldura (borda preta da TV); .tvd-tela é o painel 16:9. A borda existe
    por um motivo além de parecer TV: com o raio de 26px direto no painel, o canto
    cortava o quadrado da data quando a TV fica pequena (hero de 2 colunas, celular). */
+/* Moldura de TV de verdade: borda preta fina com brilho no fio de cima, "queixo" um
+   pouco mais alto com o LED, cantos quase retos (TV não tem canto de 26px), sombra
+   de TV presa na parede e um halo da cor da marca atrás, como luz ambiente.
+   Tudo em cqw do .tvd-bloco: a borda afina junto com a TV e nunca passa do mínimo
+   em px — no hero de 2 colunas e no celular cada pixel de moldura sai do conteúdo. */
+.tvd-bloco{container-type:inline-size}
+.tvd-bloco .tela{padding:0;background:none;border-radius:0}
 .tvdemo{
-  position:relative;width:100%;padding:clamp(5px,1.1%,12px);
-  border-radius:26px;background:#0b0a10;isolation:isolate;
+  position:relative;width:100%;isolation:isolate;
+  padding:max(5px,1.2cqw) max(5px,1.2cqw) max(8px,2.3cqw);
+  border-radius:max(6px,.9cqw);
+  background:linear-gradient(165deg,#34343b 0%,#141417 38%,#08080a 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.16),
+    inset 0 0 0 1px rgba(255,255,255,.04),
+    0 0 0 1px #000,
+    0 2.5cqw 5cqw -1.5cqw rgba(0,0,0,.75),
+    0 0 9cqw -1cqw rgba(145,0,255,.38);
+}
+/* LED de "ligada" no meio do queixo */
+.tvdemo::after{
+  content:"";position:absolute;left:50%;bottom:max(3px,.95cqw);
+  width:max(3px,.38cqw);height:max(3px,.38cqw);margin-left:max(-1.5px,-.19cqw);
+  border-radius:50%;background:#dfe6ff;box-shadow:0 0 max(3px,.5cqw) rgba(190,205,255,.9);opacity:.7;
 }
 .tvd-tela{
   container-type:inline-size;position:relative;width:100%;aspect-ratio:16/9;
-  border-radius:6px;overflow:hidden;
+  border-radius:3px;overflow:hidden;
   display:grid;grid-template-columns:15% 85%;grid-template-rows:85% 15%;
   background:#0b0a10;color:#fff;line-height:1.15;
   font-family:-apple-system,BlinkMacSystemFont,'Inter','Segoe UI',Roboto,sans-serif;
