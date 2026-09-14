@@ -33,7 +33,7 @@
      -apple-system/BlinkMacSystemFont, que resolvem antes de chegar em 'Inter' — o CSS
      de terceiro seria render-blocking por uma fonte quase nunca usada, e entregaria o
      IP de cada visitante a um terceiro (a /privacidade promete que isso não acontece). -->
-<link rel="preload" as="image" href="/assets/publico-elevador.jpg" fetchpriority="high" />
+<link rel="stylesheet" href="/tv/tv-demo.css" />
 <style>
 /* =========================================================================
    Corpflix — sistema visual
@@ -349,9 +349,29 @@ details p{margin:14px 0 0;color:var(--tinta-2);max-width:70ch}
       </div>
       <p class="publico">Síndico · administradora</p>
     </div>
-    <figure class="tela rev">
-      <img src="/assets/publico-elevador.jpg" alt="Moradora sorrindo para a tela instalada na parede do elevador." width="1200" height="900" fetchpriority="high" decoding="async" />
-    </figure>
+    <div class="tvd-bloco rev">
+      <!-- A TV tocando (tv/tv-demo.css + tv/tv-demo.js): réplica do layout-2 do player
+           real. Só entra o que o player faz — corte seco, spinner, zoom, card de notícia
+           com QR, manchete do rodapé trocando. Cotação sem número de propósito. -->
+      <figure class="tela">
+        <div class="tvdemo" role="img" aria-label="Exemplo ilustrativo de uma TV do Corpflix tocando no elevador de um condomínio: barra lateral com data, hora, clima e cotações; no centro, avisos da administração se revezando com notícias; no rodapé, a manchete do momento.">
+          <div class="tvd-tela">
+          <div class="tvd-lado" aria-hidden="true">
+            <div class="tvd-data"><div class="tvd-dia"><b>14</b><small>SET</small></div><div class="tvd-semana">Segunda</div></div>
+            <div class="tvd-hora">11:45</div>
+            <div class="tvd-clima"><div class="tvd-cidade">Goiânia</div><div class="tvd-temp"><span class="tvd-sol"></span><b>30°</b></div><div class="tvd-minmax">Min <strong>19°</strong> | Max <strong>32°</strong></div><div class="tvd-tempo">Tempo limpo</div></div>
+            <div class="tvd-cot dolar"><i>$</i><span>DÓLAR<em>▲</em></span></div><div class="tvd-cot euro"><i>€</i><span>EURO<em>▼</em></span></div><div class="tvd-cot btc"><i>₿</i><span>BITCOIN<em>▲</em></span></div><div class="tvd-cot ibov"><i>B3</i><span>IBOVESPA<em>▲</em></span></div><div class="tvd-cot nasdaq"><i>N</i><span>NASDAQ<em>▼</em></span></div>
+            <div class="tvd-texto">SEU CONDOMÍNIO</div>
+          </div>
+          <div class="tvd-main" aria-hidden="true"><div class="tvd-peca tvd-cliente ativa"><div class="tvd-fundo" style="background:linear-gradient(135deg,#1886FF 0%,#9100FF 100%)"></div><div class="tvd-txt"><span class="tvd-olho">Quinta-feira, das 8h às 12h</span><span class="tvd-tit">Manutenção do elevador social</span></div></div></div>
+          <div class="tvd-rodape" aria-hidden="true"><div class="tvd-logo"><span>SEU CONDOMÍNIO</span></div><div class="tvd-msg"><span class="tvd-fonte">N</span><div><small>Cidades</small><b>Obras de recapeamento chegam a mais três avenidas</b></div></div></div>
+          </div>
+          <script type="application/json" class="tvd-roteiro">{"segundos": 8, "pecas": [{"tipo": "cliente", "fundo": "linear-gradient(135deg,#1886FF 0%,#9100FF 100%)", "olho": "Quinta-feira, das 8h às 12h", "titulo": "Manutenção do elevador social"}, {"tipo": "noticia", "foto": "/assets/publico-elevador.jpg", "fonte": "N", "categoria": "Cidades", "manchete": "Coleta seletiva ganha novos pontos de entrega nos bairros"}, {"tipo": "info", "titulo": "Assembleia", "texto": "Dia 25, às 19h30, no salão de festas. A pauta está no mural da portaria."}, {"tipo": "cliente", "fundo": "linear-gradient(135deg,#0E9F6E 0%,#1886FF 100%)", "olho": "Coleta seletiva", "titulo": "Recicláveis: terça e sexta, na garagem"}], "manchetes": [{"categoria": "Cidades", "texto": "Obras de recapeamento chegam a mais três avenidas"}, {"categoria": "Cidades", "texto": "Coleta seletiva ganha novos pontos de entrega nos bairros"}, {"categoria": "Clima", "texto": "Frente fria deve trazer chuva no fim de semana"}, {"categoria": "Economia", "texto": "Conta de luz fica mais barata a partir do mês que vem"}]}</script>
+        </div>
+      </figure>
+      <p class="tvd-legenda">Exemplo ilustrativo do layout com barra lateral e rodapé — marca, notícias e aviso fictícios.</p>
+      <p class="tvd-cta"><a href="https://wa.me/5562985673142?text=Ol%C3%A1%21%20Vi%20a%20TV%20tocando%20no%20site%20do%20Corpflix%20e%20quero%20essa%20tela%20no%20meu%20condom%C3%ADnio.">Quero essa tela no meu condomínio</a></p>
+    </div>
   </div>
 </section>
 
@@ -599,6 +619,7 @@ details p{margin:14px 0 0;color:var(--tinta-2);max-width:70ch}
   var sinais = document.querySelectorAll('[data-sinal]');
   if (!sinais.length) return;
   setInterval(function(){
+    if (document.hidden) return;
     for (var i=0;i<sinais.length;i++){
       var s = (+sinais[i].getAttribute('data-sinal') + 1) % 3;
       sinais[i].setAttribute('data-sinal', s);
@@ -608,5 +629,6 @@ details p{margin:14px 0 0;color:var(--tinta-2);max-width:70ch}
 })();
 </script>
 
+<script src="/tv/tv-demo.js" defer></script>
 </body>
 </html>

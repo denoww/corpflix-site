@@ -33,7 +33,7 @@
      -apple-system/BlinkMacSystemFont, que resolvem antes de chegar em 'Inter' — o CSS
      de terceiro seria render-blocking por uma fonte quase nunca usada, e entregaria o
      IP de cada visitante a um terceiro (a /privacidade promete que isso não acontece). -->
-<link rel="preload" as="image" href="/assets/hero.jpg" fetchpriority="high" />
+<link rel="stylesheet" href="/tv/tv-demo.css" />
 <style>
 /* =========================================================================
    Corpflix — sistema visual
@@ -233,26 +233,7 @@ a:hover .link-mais::after,.link-mais:hover::after{transform:translateX(3px)}
 .passo p{color:var(--tinta-2);margin:0;font-size:16px;line-height:1.5}
 .passo .quem{display:inline-block;font-size:11px;font-weight:600;letter-spacing:.04em;background:var(--roxo-leve);color:var(--roxo-esc);border-radius:980px;padding:3px 9px;margin-left:8px;vertical-align:2px}
 
-/* ---------- a TV em HTML/CSS (layout "barra esquerda + inferior") ----------
-   Doutrina das irmãs: foto = gerador de imagem, INTERFACE = HTML/CSS. As
-   unidades cqw fazem a tela inteira escalar junto, até em 360px. */
-.tvmock{margin:48px auto 0;max-width:860px}
-.tv{
-  container-type:inline-size;aspect-ratio:16/9;border-radius:22px;overflow:hidden;
-  display:grid;grid-template-columns:24% 1fr;grid-template-rows:1fr 13%;
-  background:var(--noite-2);color:#fff;box-shadow:0 0 0 2px var(--noite),0 0 0 4px rgba(145,0,255,.35);
-}
-.tv-lado{display:flex;flex-direction:column;justify-content:space-between;padding:4cqw 3cqw;gap:2cqw}
-.tv-logo{font-size:2.2cqw;font-weight:600;letter-spacing:.02em;opacity:.9}
-.tv-clima b{display:block;font-size:6cqw;font-weight:600;line-height:1}
-.tv-clima span,.tv-cot span{font-size:1.9cqw;color:#D9C8FF;display:block}
-.tv-cot span{padding:.6cqw 0;border-top:1px solid rgba(255,255,255,.12)}
-.tv-main{background:var(--grad);display:flex;flex-direction:column;justify-content:flex-end;padding:5cqw}
-.tv-main span{font-size:2.4cqw;opacity:.9}
-.tv-main b{font-size:5.4cqw;font-weight:600;line-height:1.05;letter-spacing:-.01em;max-width:18ch}
-.tv-rodape{grid-column:1/-1;display:flex;align-items:center;gap:1.6cqw;padding:0 3cqw;background:var(--noite);font-size:2cqw;color:#E6DBFF;white-space:nowrap;overflow:hidden}
-.tv-rodape .tag{background:var(--roxo);color:#fff;border-radius:980px;padding:.4cqw 1.4cqw;font-weight:600}
-.tvmock figcaption{margin-top:14px;font-size:13px;color:var(--tinta-2)}
+/* a TV tocando do hero vive em /tv/tv-demo.css (compartilhada com as páginas de público) */
 
 /* ---------- declaração em névoa ---------- */
 .credo{font-size:clamp(28px,4.2vw,44px);font-weight:600;letter-spacing:-.003em;line-height:1.15;margin:0;max-width:26ch}
@@ -348,9 +329,29 @@ details p{margin:14px 0 0;color:var(--tinta-2);max-width:70ch}
         <a class="btn btn-ghost" href="#como">Ver como funciona</a>
       </div>
     </div>
-    <figure class="tela rev">
-      <img src="/assets/hero.jpg" alt="Casal esperando numa pizzaria, olhando a TV da parede que mostra uma pizza e as notícias do dia." width="1600" height="1000" fetchpriority="high" decoding="async" />
-    </figure>
+    <div class="tvd-bloco rev">
+      <!-- A TV tocando (tv/tv-demo.css + tv/tv-demo.js): réplica do layout-2 do player
+           real. Só entra o que o player faz — corte seco, spinner, zoom, card de notícia
+           com QR, manchete do rodapé trocando. Cotação sem número de propósito. -->
+      <figure class="tela">
+        <div class="tvdemo" role="img" aria-label="Exemplo ilustrativo de uma TV do Corpflix tocando: barra lateral com data, hora, clima e cotações; no centro, peças da sua marca, notícias com QR code e avisos se revezando; no rodapé, a manchete do momento.">
+          <div class="tvd-tela">
+          <div class="tvd-lado" aria-hidden="true">
+            <div class="tvd-data"><div class="tvd-dia"><b>14</b><small>SET</small></div><div class="tvd-semana">Segunda</div></div>
+            <div class="tvd-hora">11:45</div>
+            <div class="tvd-clima"><div class="tvd-cidade">Goiânia</div><div class="tvd-temp"><span class="tvd-sol"></span><b>31°</b></div><div class="tvd-minmax">Min <strong>19°</strong> | Max <strong>32°</strong></div><div class="tvd-tempo">Tempo limpo</div></div>
+            <div class="tvd-cot dolar"><i>$</i><span>DÓLAR<em>▲</em></span></div><div class="tvd-cot euro"><i>€</i><span>EURO<em>▼</em></span></div><div class="tvd-cot btc"><i>₿</i><span>BITCOIN<em>▲</em></span></div><div class="tvd-cot ibov"><i>B3</i><span>IBOVESPA<em>▲</em></span></div><div class="tvd-cot nasdaq"><i>N</i><span>NASDAQ<em>▼</em></span></div>
+            <div class="tvd-texto">SUA MARCA</div>
+          </div>
+          <div class="tvd-main" aria-hidden="true"><div class="tvd-peca tvd-cliente ativa"><div class="tvd-fundo" style="background:linear-gradient(135deg,#9100FF 0%,#5B2BFF 55%,#1886FF 100%)"></div><div class="tvd-txt"><span class="tvd-olho">Hoje, das 11h30 às 14h</span><span class="tvd-tit">Almoço executivo, de segunda a sexta</span></div></div></div>
+          <div class="tvd-rodape" aria-hidden="true"><div class="tvd-logo"><span>SUA MARCA</span></div><div class="tvd-msg"><span class="tvd-fonte">N</span><div><small>Esporte</small><b>Clássico do fim de semana deve ter estádio cheio</b></div></div></div>
+          </div>
+          <script type="application/json" class="tvd-roteiro">{"segundos": 8, "pecas": [{"tipo": "cliente", "fundo": "linear-gradient(135deg,#9100FF 0%,#5B2BFF 55%,#1886FF 100%)", "olho": "Hoje, das 11h30 às 14h", "titulo": "Almoço executivo, de segunda a sexta"}, {"tipo": "noticia", "foto": "/assets/hero.jpg", "fonte": "N", "categoria": "Economia", "manchete": "Movimento em bares e restaurantes cresce nos fins de semana, apontam comerciantes"}, {"tipo": "info", "titulo": "Aviso", "texto": "A senha do Wi-Fi está no balcão. É só pedir para a nossa equipe."}, {"tipo": "cliente", "fundo": "linear-gradient(135deg,#FF3D7F 0%,#9100FF 100%)", "olho": "Toda terça", "titulo": "Sobremesa em dobro no almoço"}], "manchetes": [{"categoria": "Esporte", "texto": "Clássico do fim de semana deve ter estádio cheio"}, {"categoria": "Economia", "texto": "Movimento em bares e restaurantes cresce nos fins de semana"}, {"categoria": "Tecnologia", "texto": "Celular novo promete bateria para dois dias de uso"}, {"categoria": "Saúde", "texto": "Caminhar 30 minutos por dia já faz diferença, dizem médicos"}]}</script>
+        </div>
+      </figure>
+      <p class="tvd-legenda">Exemplo ilustrativo do layout com barra lateral e rodapé — marca, notícias e aviso fictícios.</p>
+      <p class="tvd-cta"><a href="https://wa.me/5562985673142?text=Ol%C3%A1%21%20Vi%20a%20TV%20tocando%20no%20site%20do%20Corpflix%20e%20quero%20essa%20tela%20no%20meu%20ponto.">Quero essa tela no meu ponto</a></p>
+    </div>
   </div>
 </section>
 
@@ -449,23 +450,7 @@ details p{margin:14px 0 0;color:var(--tinta-2);max-width:70ch}
   <div class="wrap rev">
     <span class="olho">Na tela</span>
     <h2>O intervalo também informa.</h2>
-    <p class="lead">Entre uma peça sua e outra, a tela mostra o que faz a espera passar mais rápido. Vídeo, imagem e áudio seus; o resto roda junto.</p>
-
-    <!-- A TV em HTML/CSS, no layout "Barra esquerda + inferior" (layout-2 de
-         Publicidade::Tv::LAYOUTS). Sem cotação em número de propósito: número de
-         mercado inventado lê como dado. -->
-    <figure class="tvmock rev" role="img" aria-label="Exemplo ilustrativo de um layout do Corpflix: o conteúdo do cliente no centro, clima e cotações na barra lateral e manchetes na barra inferior.">
-      <div class="tv">
-        <div class="tv-lado">
-          <div class="tv-logo">SUA MARCA</div>
-          <div class="tv-clima"><b>31°</b><span>Goiânia · sol</span></div>
-          <div class="tv-cot"><span>Dólar ▲</span><span>Euro ▼</span><span>Ibovespa ▲</span></div>
-        </div>
-        <div class="tv-main"><span>Hoje, das 11h30 às 14h</span><b>Almoço executivo, de segunda a sexta</b></div>
-        <div class="tv-rodape"><span class="tag">Economia</span><span>Manchetes de oito veículos, em dezenove categorias</span></div>
-      </div>
-      <figcaption>Exemplo ilustrativo de um dos sete layouts — barra lateral e barra inferior.</figcaption>
-    </figure>
+    <p class="lead">Entre uma peça sua e outra, a tela mostra o que faz a espera passar mais rápido. Vídeo, imagem e áudio seus; o resto roda junto. É a TV que está tocando <a href="#topo">lá no topo desta página</a>.</p>
 
     <div class="grade">
       <div class="card"><h3>Notícias</h3><p>Manchetes de oito veículos, em dezenove categorias — de economia e esporte a saúde e turismo. Você escolhe quais entram.</p></div>
@@ -690,6 +675,7 @@ details p{margin:14px 0 0;color:var(--tinta-2);max-width:70ch}
   var sinais = document.querySelectorAll('[data-sinal]');
   if (!sinais.length) return;
   setInterval(function(){
+    if (document.hidden) return;
     for (var i=0;i<sinais.length;i++){
       var s = (+sinais[i].getAttribute('data-sinal') + 1) % 3;
       sinais[i].setAttribute('data-sinal', s);
@@ -699,5 +685,6 @@ details p{margin:14px 0 0;color:var(--tinta-2);max-width:70ch}
 })();
 </script>
 
+<script src="/tv/tv-demo.js" defer></script>
 </body>
 </html>
