@@ -58,8 +58,11 @@
     var peca = el('div', 'tvd-peca tvd-' + p.tipo);
     if (p.tipo === 'cliente') {
       var f = el('div', 'tvd-fundo');
-      f.style.background = p.fundo;
+      // peça com foto: a imagem entra só quando a peça vai ao ar (mesmo esquema do card de notícia)
+      if (p.foto) f.setAttribute('data-foto', p.foto);
+      else f.style.background = p.fundo;
       peca.appendChild(f);
+      if (p.foto) peca.appendChild(el('div', 'tvd-scrim'));
       var t = el('div', 'tvd-txt');
       if (p.olho) t.appendChild(el('span', 'tvd-olho', p.olho));
       t.appendChild(el('span', 'tvd-tit', p.titulo));

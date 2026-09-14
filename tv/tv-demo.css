@@ -65,7 +65,9 @@
 
 /* peça do cliente */
 .tvd-cliente{display:flex;flex-direction:column;justify-content:flex-end;padding:4.2cqw 4.6cqw}
-.tvd-cliente .tvd-txt{position:relative}
+/* peça com foto: degradê escuro no canto do texto, como a arte que o cliente manda pronta */
+.tvd-scrim{position:absolute;inset:0;background:linear-gradient(20deg,rgba(0,0,0,.78) 0%,rgba(0,0,0,.45) 38%,rgba(0,0,0,0) 68%)}
+.tvd-cliente .tvd-txt{position:relative;text-shadow:0 .15cqw .8cqw rgba(0,0,0,.45)}
 .tvd-cliente .tvd-olho{display:block;font-size:1.7cqw;font-weight:500;opacity:.92;margin-bottom:.8cqw}
 .tvd-cliente .tvd-tit{display:block;font-size:4.4cqw;font-weight:700;line-height:1.04;letter-spacing:-.01em;max-width:17ch}
 
