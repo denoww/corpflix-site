@@ -43,6 +43,9 @@ from pathlib import Path
 WA = "https://wa.me/" + (Path(__file__).parent.parent / ".whatsapp").read_text().strip()
 WA_TXT = "?text=Ol%C3%A1!%20Vi%20o%20livreto%20do%20Corpflix%20e%20quero%20saber%20mais."
 SITE = "https://www.corpflix.com.br"
+# Texto do QR da contracapa do PDF — diferente do botão, pra medir quem veio pelo papel.
+# Mudou? Rode `python3 livreto/gera_qr.py` (o build aborta se o SVG estiver velho).
+WA_QR_TXT = "?text=Ol%C3%A1!%20Li%20o%20livreto%20do%20Corpflix%20em%20PDF%20e%20quero%20uma%20tela."
 
 # ---------------------------------------------------------------- hero / credo
 HERO = {
@@ -64,7 +67,7 @@ BOARDS = {
         ("espera",  "O cliente senta",        "E olha para a tela — é o único lugar para onde olhar enquanto espera."),
         ("pedido",  "Você manda a peça",      "Cardápio, promoção, vídeo novo. Você manda, a gente publica."),
         ("grade",   "Entra na hora certa",    "O almoço executivo ao meio-dia, o happy hour às dezoito."),
-        ("rede",    "Uma loja ou a rede",     "Cada unidade com o conteúdo dela, no mesmo painel."),
+        ("rede",    "Uma loja ou a rede",     "Cada unidade com o conteúdo dela — a gente programa a rede toda."),
     ]),
     "empresa": ("roxo", "Do recado do RH ao intervalo do café", [
         ("refeitorio", "O time para no refeitório", "Quem não senta na frente de um computador passa por aqui todo dia."),
@@ -81,7 +84,7 @@ BOARDS = {
     "noar": ("noite", "Da tela calada ao aviso para o nosso time", [
         ("pulso",    "A tela avisa que está viva", "Cada TV dá sinal ao servidor a cada três segundos."),
         ("alerta",   "Calou, a gente sabe",        "Mais de uma hora fora do ar vira alerta para o nosso time."),
-        ("reinicio", "Reinicia de longe",          "Travou? O player é reiniciado do painel, sem visita."),
+        ("reinicio", "Reinicia de longe",          "Travou? O nosso time reinicia o player de longe, sem visita."),
         ("resumo",   "Todo dia, o resumo",         "Quem caiu, quem voltou — antes de alguém reclamar."),
     ]),
     "rede": ("roxo", "Do seu pedido à tela, sem pendrive", [
@@ -112,8 +115,8 @@ COMERCIO = [
      "Notícias, clima da cidade e cotação do dólar preenchem o intervalo — o cliente para de "
      "olhar o relógio.", ""),
     ("Uma tela ou a rede inteira",
-     "Franquia e rede ficam no mesmo painel, com o conteúdo de cada unidade — a promoção de "
-     "uma cidade não aparece na outra.", ""),
+     "Franquia e rede com o conteúdo de cada unidade, programado pelo nosso time — a promoção "
+     "de uma cidade não aparece na outra.", ""),
 ]
 
 EMPRESA = [
@@ -130,8 +133,8 @@ EMPRESA = [
      "Nenhum anunciante de fora entra na grade de uma empresa: ela é montada só com o que o "
      "RH mandou, mais notícias, clima e cotações.", ""),
     ("Cada ambiente com o seu conteúdo",
-     "Refeitório, recepção, sala de reunião e corredor podem exibir coisas diferentes, no mesmo "
-     "painel.", ""),
+     "Refeitório, recepção, sala de reunião e corredor podem exibir coisas diferentes — cada "
+     "tela com a sua grade.", ""),
     ("Programado por turno",
      "O aviso do turno da noite entra à noite. Dia da semana e horário, peça por peça.", ""),
 ]
@@ -165,8 +168,8 @@ OPERACAO = [
      "Tela fora do ar por mais de uma hora vira alerta para o nosso time — e todo dia sai um "
      "resumo de quem caiu e quem voltou.", ""),
     ("Reinício à distância",
-     "Travou? O player é reiniciado do painel, sem alguém subir até o elevador ou atravessar a "
-     "cidade até a loja.", ""),
+     "Travou? O nosso time reinicia o player de longe, sem alguém subir até o elevador ou "
+     "atravessar a cidade até a loja.", ""),
     ("Aguenta a internet cair",
      "O conteúdo fica guardado no próprio player: o link cai e a tela continua tocando o que já "
      "tinha baixado.", ""),
@@ -270,6 +273,30 @@ TILES = [
     ("Tela em pé",            "Sete layouts, três verticais, seis resoluções.",  ""),
     ("Sinal a cada 3 s",      "Alerta depois de uma hora fora e resumo diário.", ""),
     ("Toca sem internet",     "O conteúdo fica guardado no player.",             ""),
+]
+
+# A anatomia da tela — o que aparece em cada área do layout com barra lateral e rodapé
+# (layout-2 do player real). Só o que o player faz: sem ticker, sem tela dividida.
+ANATOMIA = [
+    ("Barra lateral", "Data, relógio, o clima da cidade da TV e as cotações do dia — sempre à vista."),
+    ("Área principal", "As suas peças, uma de cada vez, com o card de notícia e os avisos entre elas."),
+    ("Rodapé", "A sua marca e a manchete do momento, que troca a cada peça."),
+]
+
+# Quadros da TV em cada capítulo — imagens geradas da demo do site (tv/), com moldura.
+QUADROS = {
+    "capa":       ("livreto-tv-capa",       "TV do Corpflix tocando: barra lateral com data, hora, clima e cotações, peça de almoço executivo e manchete no rodapé."),
+    "comercio":   ("livreto-tv-comercio",   "TV do Corpflix numa pizzaria: promoção de pizza grande com refrigerante na área principal."),
+    "empresa":    ("livreto-tv-empresa",    "TV do Corpflix numa empresa: convite da SIPAT com foto de treinamento de segurança."),
+    "condominio": ("livreto-tv-condominio", "TV do Corpflix no condomínio: aviso de manutenção do elevador social."),
+    "aviso":      ("livreto-tv-aviso",      "TV do Corpflix com um aviso de assembleia em cartão sobre fundo azul."),
+}
+
+# Contracapa — o próximo passo, sem prazo nem promessa: só a ordem das coisas.
+COMECAR = [
+    ("Conte onde a tela fica", "Sala de espera, refeitório, elevador — e o que você quer mostrar nela."),
+    ("A gente instala o player", "Na TV que você já tem, ou num aparelho pequeno ligado a ela."),
+    ("Você manda a primeira peça", "A gente monta a grade, publica e passa a vigiar a tela."),
 ]
 
 CTA = ("Vamos acender a sua tela.",

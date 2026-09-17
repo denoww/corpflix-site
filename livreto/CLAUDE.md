@@ -49,13 +49,31 @@ Mais uma, desta peça: a folha A4 tem ~690px úteis, **abaixo do breakpoint de 8
 overrides de grade no `@media print` (`.publicos`, `.passos` em 3 colunas, `.mrow` em 2),
 tudo vira uma coluna, o PDF passa de 21 páginas e a última sai só com o rodapé.
 
-## Antes de adicionar uma foto
+## v2 (17/09/2026): o livreto é montado em FOLHAS
 
-`foto("x")` gera `<img src="/assets/x.jpg">` sem validar nada. Se o arquivo não existir, a
-página e o PDF ficam com imagem quebrada e **o workflow do livreto não reclama** (o guard de
-página em branco só mede tinta, e texto conta). Use só os nomes do contrato de assets:
-`hero`, `publico-comercio`, `publico-corporativa`, `publico-elevador` (+ `wordmark.png`,
-`wordmark-escuro.png`, `favicon-32.png`, `apple-touch-icon.png`, `og.jpg`, `brand-mark.png`).
+Cada `folha()` do `build.py` é **exatamente uma página A4** no PDF (`height:297mm`,
+`overflow:hidden`, `break-after:page`) e uma seção normal na tela. A v1 deixava o conteúdo
+correr solto: 18 páginas, capa 2/3 vazia, capítulo começando no pé da folha. A v2 tem 10.
+
+⚠️ **Conteúdo a mais numa folha SOME CALADO** (o `overflow:hidden` corta, e o CI só mede
+página em branco). Acrescentou card ou frase longa? Rode `python3 livreto/build.py && bash
+livreto/build_pdf.sh` e **olhe a página**. Folha com sobra no pé se resolve aumentando a letra
+dela no bloco "folhas com menos texto" do `@media print`, não esticando o layout inteiro.
+
+## Imagens
+
+O `build.py` **aborta** se um quadro de `content.py > QUADROS` não existir em `assets/`.
+Os quadros `livreto-tv-*.jpg` são capturas da **TV tocando do próprio site** (`tv/`), com
+moldura, em 2× (1440 px de largura). Pra refazer: servir o site local e rodar um script
+Playwright que isola a `.tvdemo`, para o carrossel, fixa data/hora e ativa a peça desejada.
+⛔ Não use `hero.jpg` nem as fotos `publico-*`: a TV dentro dessas fotos mostra **tela
+dividida**, que o player não faz.
+
+O QR da contracapa é `livreto/qr_whatsapp.svg`, gerado por `livreto/gera_qr.py` (o runner do CI
+não tem a lib `qrcode`). O `build.py` aborta se o número ou o texto mudarem sem regerar o SVG.
+
+Outros nomes do contrato de assets: `wordmark.png`, `wordmark-escuro.png`, `favicon-32.png`,
+`apple-touch-icon.png`, `og.jpg`, `brand-mark.png`.
 
 ## Conteúdo: só o que roda
 
