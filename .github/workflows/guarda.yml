@@ -104,7 +104,11 @@ jobs:
         run: |
           CANON=$(cat .login | tr -d '[:space:]')
           FONTES=$(git ls-files '*.html' '*.py' '*.md' | grep -v '^livreto/index.html$')
-          ACHADOS=$(grep -Ioh 'https://[a-zA-Z0-9.-]*/logar[^"[:space:]>]*' $FONTES \
+          # A classe exclui crase e ')' porque as FONTES incluem .md: uma URL escrita
+          # como `https://.../logar?no_layout=true` ou em link [texto](url) arrastava o
+          # delimitador junto e virava um "destino divergente" que nao existe. Foi o que
+          # deixou este guard vermelho de 10/09 a 18/09/2026 sem ninguem ver.
+          ACHADOS=$(grep -Ioh 'https://[a-zA-Z0-9.-]*/logar[^"`)[:space:]>]*' $FONTES \
                     | sort -u | grep -vxF "$CANON" || true)
           if [ -n "$ACHADOS" ]; then
             echo "::error::destino de login divergente do .login ($CANON): $ACHADOS"
