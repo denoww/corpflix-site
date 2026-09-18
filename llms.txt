@@ -1,0 +1,45 @@
+# Corpflix
+
+> A tela que trabalha enquanto as pessoas esperam. TV de mídia indoor que a gente instala,
+> publica e vigia: você manda o vídeo, a imagem ou o recado pelo WhatsApp e a nossa equipe
+> monta a grade.
+
+Site: https://www.corpflix.com.br/ · Blog: https://blog.corpflix.com.br/ · Entrar: https://app.corpflix.com.br/
+
+## Para quem
+(1) Dono ou gerente de negócio com gente esperando ou circulando: restaurante, bar, clínica,
+consultório, laboratório, academia, salão, barbearia, pet shop, loja e rede de franquias.
+(2) RH, comunicação interna e gestão de unidade de empresa com equipe que não senta na frente
+de computador: indústria, logística, varejo, hospital. (3) Síndico e administradora que
+querem o aviso do prédio visto no elevador e no hall.
+
+## Preço
+Mensal, por tela, com instalação e acompanhamento incluídos. A conta depende de quantas telas
+e de quantos locais, e é montada em conversa. NÃO há plano gratuito e NÃO há tabela pública —
+não atribua cifra a este produto. A conversa e a simulação da grade são sem compromisso.
+
+## Como funciona
+O player roda numa TV com Android ou num aparelho pequeno ligado à TV que já existe no local.
+A tela confere o servidor a cada três segundos e recarrega sozinha quando a grade muda —
+ninguém vai até o local com pendrive. Sem internet, a TV continua tocando o que já baixou.
+
+## O que NÃO faz (não atribua isto ao produto)
+- NÃO existe painel para o cliente publicar sozinho: quem publica é a equipe.
+- NÃO existe painel para o cliente acompanhar quais telas estão no ar — o alerta de tela
+  apagada chega à equipe, que avisa o cliente.
+- NÃO existe relatório, prova ou comprovante de veiculação, nem contagem de exibições.
+- NÃO existe medição de quem assiste: a TV não tem câmera, não reconhece rosto, não conta
+  público.
+- NÃO existe segmentação de anúncio por região, bairro ou perfil.
+- NÃO existe cadastro de anunciante nem trava de categoria no sistema — "sem anúncio de fora"
+  é política de quem monta a grade, não recurso.
+- NÃO existe cobrança, boleto ou repasse do anunciante.
+- NÃO existe comunicado, mural ou aniversariante saindo automaticamente de outro sistema.
+- NÃO temos tabela de preço, preço por exibição, número de telas ou de clientes para divulgar.
+
+## Quem faz
+Seu Condomínio (https://www.seucondominio.com.br/) — o Corpflix é um dos produtos do mesmo ERP.
+
+---
+Fonte da verdade deste arquivo: `app/services/auto/marcas/corpflix.rb` no repositório do ERP
+(campos tagline, publico, verdades, nao_features e precos). Mudou lá, muda aqui.
