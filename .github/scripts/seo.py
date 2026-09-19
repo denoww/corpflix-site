@@ -123,11 +123,26 @@ PROIBIDAS = [
 NEGADORES = re.compile(r'\b(n[ãa]o|ningu[ée]m|nunca|nenhum[ao]?|jamais|sem)\b[^.\n]{0,60}$', re.I)
 
 erros: list[str] = []
+avisos: list[str] = []
 
 
 def falha(msg: str) -> None:
     erros.append(msg)
     print(f'::error::{msg}')
+
+
+def aviso(msg: str) -> None:
+    """Reprova NADA — só aparece no log e no resumo.
+
+    ⚠️ Severidade escolhida por MEDIÇÃO, não por gosto (19/09/2026): título acima de 60 e
+    description acima de 160 valem como recomendação, mas HOJE **toda** página indexável
+    dos 4 sites estouraria a de description e 6 estourariam a de título. Subir isso pra
+    erro entregaria os 4 CIs vermelhos de uma vez, e guard que nasce vermelho é guard que
+    o time aprende a ignorar (foi o que aconteceu com o `guarda.yml` do atendeaqui, 8 dias
+    no vermelho por uma crase). Vira `falha` quando os 4 estiverem limpos.
+    """
+    avisos.append(msg)
+    print(f'::warning::{msg}')
 
 
 def excluidas_do_jekyll() -> list[str]:
@@ -291,9 +306,127 @@ def confere_http(urls: list[str]) -> None:
                       f'o Pages pode não ter publicado ainda')
 
 
+def rotulo(arq: Path) -> str:
+    """Caminho relativo à raiz do site.
+
+    `arq.name` é 'index.html' tanto pra home quanto pra /livreto/ — a mensagem fica
+    ambígua justamente nas duas páginas que mais mudam.
+    """
+    try:
+        return str(arq.relative_to(RAIZ))
+    except ValueError:
+        return arq.name
+
+
+def confere_titulo(arq: Path, bruto: str, titulos: dict[str, str]) -> None:
+    """`<title>` existe, não repete entre páginas, e cabe no resultado de busca.
+
+    O `<title>` é o que o buscador mostra como link e o que um assistente lê como "nome
+    desta página". Faltar é erro; passar de ~60 caracteres é recomendação (o Google corta,
+    mas não penaliza).
+    """
+    m = re.search(r'<title>(.*?)</title>', bruto, re.S)
+    if not m:
+        falha(f'{rotulo(arq)}: página indexável sem <title>')
+        return
+
+    titulo = ' '.join(m.group(1).split())
+    if titulo in titulos:
+        falha(f'{rotulo(arq)}: <title> idêntico ao de {titulos[titulo]} — duas páginas, um nome só')
+    titulos[titulo] = rotulo(arq)
+
+    if len(titulo) > 60:
+        aviso(f'{rotulo(arq)}: <title> com {len(titulo)} caracteres (o buscador corta perto de 60)')
+
+
+def confere_descricao(arq: Path, bruto: str) -> None:
+    """Comprimento da meta description. A EXISTÊNCIA já é cobrada no `main` como erro."""
+    m = re.search(r'name="description"\s+content="([^"]*)"', bruto)
+    if not m:
+        return
+    n = len(m.group(1).strip())
+    if n > 160:
+        aviso(f'{rotulo(arq)}: meta description com {n} caracteres (o buscador corta perto de 160)')
+    elif n < 70:
+        aviso(f'{rotulo(arq)}: meta description com só {n} caracteres — cabe mais argumento')
+
+
+def blocos_jsonld(bruto: str) -> list[dict]:
+    """Os nós do JSON-LD da página, já achatando o `@graph`."""
+    saida: list[dict] = []
+    for m in re.finditer(r'<script type="application/ld\+json">(.*?)</script>', bruto, re.S):
+        try:
+            dados = json.loads(m.group(1))
+        except Exception:
+            continue  # JSON inválido já é erro no confere_faq
+        nos = dados.get('@graph', [dados]) if isinstance(dados, dict) else dados
+        saida.extend(n for n in nos if isinstance(n, dict))
+    return saida
+
+
+def confere_no_de_produto(arq: Path, bruto: str, canonical: str) -> None:
+    """A HOME precisa dizer, em dado estruturado, O QUE é vendido.
+
+    ⚠️ Medido em 17-18/09/2026 (ROADMAP_multi_produto.md §8.6): o assistente de IA entrega
+    ~50% do tráfego de uma marca nova e cita o PRODUTO pelo nome. O corpflix ficou meses só
+    com Organization + WebSite + FAQPage — nada no dado estruturado dizia o que era vendido.
+    Só a home é cobrada: página de público ou de privacidade não vende produto.
+    """
+    if canonical.rstrip('/') != BASE.rstrip('/'):
+        return
+    tipos = {n.get('@type') for n in blocos_jsonld(bruto)}
+    if not ({'SoftwareApplication', 'Service', 'Product'} & tipos):
+        falha(f'{rotulo(arq)}: a home não tem nó de produto no JSON-LD '
+              '(SoftwareApplication/Service/Product) — o assistente não tem o que citar')
+
+
+def confere_arquivos_de_raiz() -> None:
+    """`robots.txt` e `llms.txt` existem, e o robots aponta o sitemap."""
+    robots = RAIZ / 'robots.txt'
+    if not robots.exists():
+        falha('robots.txt não existe')
+    elif 'Sitemap:' not in robots.read_text(encoding='utf-8'):
+        falha('robots.txt sem linha `Sitemap:` — o crawler tem que adivinhar onde está o mapa')
+
+    if not (RAIZ / 'llms.txt').exists():
+        falha('llms.txt não existe — é o que diz ao assistente o que o produto é, '
+              'quanto custa e o que ele NÃO faz (ROADMAP_multi_produto.md §7.6)')
+
+
+def confere_preco_coerente() -> None:
+    """O preço do `llms.txt` tem que bater com o `offers.price` da home.
+
+    ☠️ O `llms.txt` do www é escrito à MÃO (o do blog é gerado do registry pelo ERP) e já
+    derivou uma vez em menos de 24 h: em 18/09/2026 o do atendeaqui afirmava que o app não
+    estava nas lojas quando estava desde 11/08. Esta é a versão local do guard — a completa
+    é `rake marcas:auditar_seo`, que compara com o registry.
+    """
+    llms = RAIZ / 'llms.txt'
+    home = RAIZ / 'index.html'
+    if not llms.exists() or not home.exists():
+        return
+
+    precos = [str(n['offers'].get('price'))
+              for n in blocos_jsonld(home.read_text(encoding='utf-8'))
+              if isinstance(n.get('offers'), dict) and n['offers'].get('price')]
+    if not precos:
+        return  # marca sem preço público (corpflix) não tem o que conferir
+
+    texto = llms.read_text(encoding='utf-8')
+    for preco in precos:
+        inteiro = preco.split('.')[0]
+        if inteiro and inteiro not in texto:
+            falha(f'llms.txt não cita o preço que a home declara no JSON-LD ({preco}) — '
+                  'cópia manual que derivou')
+
+
 def main() -> int:
     so_confere = '--check' in sys.argv
     urls: list[tuple[str, str]] = []
+    titulos: dict[str, str] = {}
+
+    confere_arquivos_de_raiz()
+    confere_preco_coerente()
 
     for arq in sorted(paginas()):
         bruto = arq.read_text(encoding='utf-8')
@@ -316,6 +449,9 @@ def main() -> int:
         if not mc:
             falha(f'{arq.name}: página indexável sem canonical — não entra no sitemap')
             continue
+        confere_titulo(arq, bruto, titulos)
+        confere_descricao(arq, bruto)
+        confere_no_de_produto(arq, bruto, mc.group(1))
         urls.append((mc.group(1), lastmod(arq)))
 
     if len(urls) != len({u for u, _ in urls}):
@@ -327,7 +463,7 @@ def main() -> int:
     if '--http' in sys.argv and not erros:
         confere_http([u for u, _ in urls])
 
-    print(f'{len(urls)} URLs, {len(erros)} erro(s)')
+    print(f'{len(urls)} URLs, {len(erros)} erro(s), {len(avisos)} aviso(s)')
     return 1 if erros else 0
 
 
