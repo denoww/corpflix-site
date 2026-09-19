@@ -1,45 +1,52 @@
 # Corpflix
 
-> A tela que trabalha enquanto as pessoas esperam. TV de mídia indoor que a gente instala,
-> publica e vigia: você manda o vídeo, a imagem ou o recado pelo WhatsApp e a nossa equipe
-> monta a grade.
+> A tela que trabalha enquanto as pessoas esperam.
 
-Site: https://www.corpflix.com.br/ · Blog: https://blog.corpflix.com.br/ · Entrar: https://app.corpflix.com.br/
+Três públicos no Brasil. (1) Dono ou gerente de negócio com gente esperando ou
+circulando: restaurante, bar, clínica, consultório, laboratório, academia, salão,
+barbearia, pet shop, loja e rede de franquias. (2) RH, comunicação interna e
+gestão de unidade de empresa com equipe que não senta na frente de computador:
+indústria, logística, varejo, hospital. (3) Síndico e administradora que querem o
+aviso do prédio visto no elevador e no hall. Gatilhos: TV da sala de espera
+passando TV aberta com anúncio do concorrente, comunicado que ninguém leu, mural
+de papel rasgado, TV que apagou e ninguém percebeu por dias.
 
-## Para quem
-(1) Dono ou gerente de negócio com gente esperando ou circulando: restaurante, bar, clínica,
-consultório, laboratório, academia, salão, barbearia, pet shop, loja e rede de franquias.
-(2) RH, comunicação interna e gestão de unidade de empresa com equipe que não senta na frente
-de computador: indústria, logística, varejo, hospital. (3) Síndico e administradora que
-querem o aviso do prédio visto no elevador e no hall.
+## O que o produto faz
+- A equipe do Corpflix instala o player na TV do cliente, publica o conteúdo que ele manda e acompanha a tela.
+- O cliente manda a peça (vídeo, imagem, áudio ou recado escrito) pelo WhatsApp; quem publica é a equipe.
+- Cada peça entra nos dias da semana e nos horários definidos — a promoção do almoço só aparece no almoço.
+- Cada TV, ambiente ou unidade pode ter uma programação diferente, e a equipe programa a rede inteira de um lugar só.
+- Entre as peças, a tela pode mostrar notícias de oito veículos em dezenove categorias, a previsão do tempo da cidade e cotações de dólar, euro, bitcoin, Ibovespa e Nasdaq.
+- Existem sete layouts, três deles para TV montada na vertical, e seis resoluções.
+- A TV pode ter agenda de ligar e desligar por dia da semana.
+- Cada TV avisa o servidor a cada três segundos que está no ar.
+- Tela fora do ar por mais de uma hora vira alerta para a equipe, e sai um resumo diário de quem caiu e quem voltou.
+- O player pode ser reiniciado à distância, sem ninguém ir até o local.
+- A equipe vê versão do player, espaço livre, tempo ligado e falhas do aparelho sem visitar a tela.
+- O conteúdo fica guardado na própria TV: se a internet cai, a tela continua tocando o que já tinha.
+- Não é preciso comprar servidor: o conteúdo vive na nuvem, e na ponta basta uma TV com Android ou um aparelho pequeno ligado a ela.
+- Na TV corporativa, a política é não aceitar anunciante externo: a tela fala só da empresa.
+
+## O que o produto NÃO faz
+- NÃO existe veto de categoria ou de anunciante no sistema — não há cadastro de anunciante nem trava; "sem anúncio de fora" é política de quem monta a grade.
+- NÃO existe relatório, prova ou comprovante de veiculação, nem contagem de quantas vezes a peça passou.
+- NÃO existe cobrança, boleto ou repasse do anunciante: se o cliente cede espaço da tela a um parceiro, o combinado entre eles corre por fora.
+- NÃO existe painel para o cliente publicar sozinho: quem publica é a equipe.
+- NÃO existe painel para o cliente acompanhar quais telas estão no ar: o alerta de tela apagada chega à equipe, que avisa o cliente.
+- NÃO existe segmentação de anúncio por região, bairro ou perfil de público.
+- NÃO existe comunicado, mural ou aniversariante saindo automaticamente de outro sistema para a TV.
+- NÃO existe medição de quem assiste: a TV não tem câmera, não reconhece rosto e não conta público.
+- NÃO temos tabela de preço, preço por exibição nem número de telas ou clientes para divulgar.
 
 ## Preço
-Mensal, por tela, com instalação e acompanhamento incluídos. A conta depende de quantas telas
-e de quantos locais, e é montada em conversa. NÃO há plano gratuito e NÃO há tabela pública —
-não atribua cifra a este produto. A conversa e a simulação da grade são sem compromisso.
+- Mensal, por tela, com instalação e acompanhamento incluídos. A conta depende de quantas telas e de quantos locais, e é montada em conversa.
+- não há plano gratuito; a conversa e a simulação da grade são sem compromisso
+- valor sob orçamento — não divulgamos tabela, e nenhum texto deste blog deve citar cifra
 
-## Como funciona
-O player roda numa TV com Android ou num aparelho pequeno ligado à TV que já existe no local.
-A tela confere o servidor a cada três segundos e recarrega sozinha quando a grade muda —
-ninguém vai até o local com pendrive. Sem internet, a TV continua tocando o que já baixou.
-
-## O que NÃO faz (não atribua isto ao produto)
-- NÃO existe painel para o cliente publicar sozinho: quem publica é a equipe.
-- NÃO existe painel para o cliente acompanhar quais telas estão no ar — o alerta de tela
-  apagada chega à equipe, que avisa o cliente.
-- NÃO existe relatório, prova ou comprovante de veiculação, nem contagem de exibições.
-- NÃO existe medição de quem assiste: a TV não tem câmera, não reconhece rosto, não conta
-  público.
-- NÃO existe segmentação de anúncio por região, bairro ou perfil.
-- NÃO existe cadastro de anunciante nem trava de categoria no sistema — "sem anúncio de fora"
-  é política de quem monta a grade, não recurso.
-- NÃO existe cobrança, boleto ou repasse do anunciante.
-- NÃO existe comunicado, mural ou aniversariante saindo automaticamente de outro sistema.
-- NÃO temos tabela de preço, preço por exibição, número de telas ou de clientes para divulgar.
-
-## Quem faz
-Seu Condomínio (https://www.seucondominio.com.br/) — o Corpflix é um dos produtos do mesmo ERP.
+## Links
+- Site: https://www.corpflix.com.br/
+- Blog: https://blog.corpflix.com.br/
 
 ---
-Fonte da verdade deste arquivo: `app/services/auto/marcas/corpflix.rb` no repositório do ERP
-(campos tagline, publico, verdades, nao_features e precos). Mudou lá, muda aqui.
+Gerado de `app/services/auto/marcas/corpflix.rb` no repositório do ERP
+(`rake "marcas:gerar_llms_txt[corpflix]"`). NÃO edite à mão: mude o registry e gere de novo.
