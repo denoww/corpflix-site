@@ -134,12 +134,13 @@ def falha(msg: str) -> None:
 def aviso(msg: str) -> None:
     """Reprova NADA — só aparece no log e no resumo.
 
-    ⚠️ Severidade escolhida por MEDIÇÃO, não por gosto (19/09/2026): título acima de 60 e
-    description acima de 160 valem como recomendação, mas HOJE **toda** página indexável
-    dos 4 sites estouraria a de description e 6 estourariam a de título. Subir isso pra
-    erro entregaria os 4 CIs vermelhos de uma vez, e guard que nasce vermelho é guard que
-    o time aprende a ignorar (foi o que aconteceu com o `guarda.yml` do atendeaqui, 8 dias
-    no vermelho por uma crase). Vira `falha` quando os 4 estiverem limpos.
+    ⚠️ Severidade escolhida por MEDIÇÃO (19/09/2026), e promovida a ERRO em 23/09: quando a
+    regra nasceu, **toda** página indexável dos sites estourava a de description e 6 estouravam
+    a de título — subir isso pra erro entregaria todos os CIs vermelhos de uma vez, e guard que
+    nasce vermelho é guard que o time aprende a ignorar (foi o que aconteceu com o `guarda.yml`
+    do atendeaqui, 8 dias no vermelho por uma crase). As 14 páginas foram reescritas, os 5 sites
+    ficaram limpos, e aí sim o limite virou `falha`. Quem continua avisando é só a description
+    CURTA demais, que não quebra nada.
     """
     avisos.append(msg)
     print(f'::warning::{msg}')
@@ -336,7 +337,7 @@ def confere_titulo(arq: Path, bruto: str, titulos: dict[str, str]) -> None:
     titulos[titulo] = rotulo(arq)
 
     if len(titulo) > 60:
-        aviso(f'{rotulo(arq)}: <title> com {len(titulo)} caracteres (o buscador corta perto de 60)')
+        falha(f'{rotulo(arq)}: <title> com {len(titulo)} caracteres (o buscador corta perto de 60)')
 
 
 def confere_descricao(arq: Path, bruto: str) -> None:
@@ -346,7 +347,7 @@ def confere_descricao(arq: Path, bruto: str) -> None:
         return
     n = len(m.group(1).strip())
     if n > 160:
-        aviso(f'{rotulo(arq)}: meta description com {n} caracteres (o buscador corta perto de 160)')
+        falha(f'{rotulo(arq)}: meta description com {n} caracteres (o buscador corta perto de 160)')
     elif n < 70:
         aviso(f'{rotulo(arq)}: meta description com só {n} caracteres — cabe mais argumento')
 
