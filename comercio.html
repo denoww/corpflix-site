@@ -295,6 +295,60 @@ details p{margin:14px 0 0;color:var(--tinta-2);max-width:70ch}
   .card{padding:24px}
 }
 </style>
+<!-- ═══ MEDIÇÃO — GA4 (propriedade "corpflix.com.br") ══════════════════════════
+     Existe por um motivo só: o lead deste site é um CLIQUE PARA FORA (wa.me), e
+     sem isso não dá pra saber se o blog e as páginas novas trazem cliente. Ver o
+     evento `contato_whatsapp` mais abaixo.
+
+     ⚠️ NENHUM SINAL DE ANÚNCIO. `ad_storage`/`ad_user_data`/`ad_personalization`
+     nascem `denied` e `allow_google_signals:false` — este site não faz
+     remarketing, não constrói público e não cruza o visitante com o Google Ads.
+     `analytics_storage` fica `granted` porque medir audiência em 1ª parte é o
+     objetivo declarado, está descrito em /privacidade e tem opt-out real logo
+     abaixo. Ligar tudo `denied` sem banner deixaria só ping sem cookie: a página
+     ficaria "conforme" e o dado, inútil — o pior dos dois mundos.
+
+     O listener é DELEGADO no document de propósito: pega os 7 CTAs de hoje e os
+     das páginas que ainda vão nascer, sem tocar em nenhum <a>. ═══════════════ -->
+<script>
+  // Opt-out de verdade: o botão em /privacidade grava esta chave. Precisa vir
+  // ANTES do gtag.js, senão a primeira medição já saiu.
+  try { if (localStorage.getItem('sem-analytics') === '1') window['ga-disable-G-SZNPSY50CR'] = true; } catch (e) {}
+</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-SZNPSY50CR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('consent', 'default', {
+    ad_storage: 'denied', ad_user_data: 'denied', ad_personalization: 'denied',
+    analytics_storage: 'granted'
+  });
+  gtag('js', new Date());
+  gtag('config', 'G-SZNPSY50CR', {
+    allow_google_signals: false,
+    allow_ad_personalization_signals: false
+  });
+  document.addEventListener('click', function (e) {
+    var alvo = e.target;
+    if (!alvo || !alvo.closest) return;
+    var a = alvo.closest('a[href*="wa.me"]');
+    if (!a) return;
+    gtag('event', 'contato_whatsapp', {
+      pagina: location.pathname,
+      cta: a.className || 'sem-classe',
+      // De ONDE veio quem clicou. Medido em 17-18/09/2026: metade das sessoes
+      // deste site vem de chatgpt.com e 5% do Google, mas o lead sai por wa.me e
+      // o clique e o lead nunca se cruzavam. So o HOSTNAME: a URL inteira do
+      // referrer pode carregar termo de busca, que e dado de quem visita.
+      origem: (function () {
+        try { return document.referrer ? new URL(document.referrer).hostname : '(direto)'; }
+        catch (e) { return '(desconhecido)'; }
+      })()
+    });
+  });
+</script>
+
+
 </head>
 <body>
 

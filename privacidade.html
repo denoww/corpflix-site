@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Política de Privacidade — Corpflix</title>
-<meta name="description" content="O site do Corpflix não usa analytics nem cookie de rastreio; o player não coleta dado de quem assiste, só a telemetria do aparelho." />
+<meta name="description" content="Como o Corpflix trata dados: medimos a audiência do site sem sinal de anúncio e com desligamento por navegador; o player não coleta dado de quem assiste." />
 <meta name="robots" content="index, follow, max-image-preview:large" />
 <link rel="canonical" href="https://www.corpflix.com.br/privacidade" />
 
@@ -28,7 +28,7 @@
 <meta name="twitter:description" content="O site não rastreia visitante e o player da TV não coleta dado de quem assiste. Veja o que é registrado e por quê." />
 <meta name="twitter:image" content="https://www.corpflix.com.br/assets/og.jpg" />
 
-<!-- ⚠️ Sem Google Fonts e sem analytics, de propósito. A pilha de fonte começa em
+<!-- ⚠️ Sem Google Fonts, de propósito (a medição GA4 entrou em 23/09/2026 e está declarada em /privacidade). A pilha de fonte começa em
      -apple-system/BlinkMacSystemFont, que resolvem antes de chegar em 'Inter' — o CSS
      de terceiro seria render-blocking por uma fonte quase nunca usada, e entregaria o
      IP de cada visitante a um terceiro (a /privacidade promete que isso não acontece). -->
@@ -71,6 +71,60 @@
   footer a{color:var(--tinta)}
   @media (max-width:400px){.wrap{padding:0 18px}}
 </style>
+<!-- ═══ MEDIÇÃO — GA4 (propriedade "corpflix.com.br") ══════════════════════════
+     Existe por um motivo só: o lead deste site é um CLIQUE PARA FORA (wa.me), e
+     sem isso não dá pra saber se o blog e as páginas novas trazem cliente. Ver o
+     evento `contato_whatsapp` mais abaixo.
+
+     ⚠️ NENHUM SINAL DE ANÚNCIO. `ad_storage`/`ad_user_data`/`ad_personalization`
+     nascem `denied` e `allow_google_signals:false` — este site não faz
+     remarketing, não constrói público e não cruza o visitante com o Google Ads.
+     `analytics_storage` fica `granted` porque medir audiência em 1ª parte é o
+     objetivo declarado, está descrito em /privacidade e tem opt-out real logo
+     abaixo. Ligar tudo `denied` sem banner deixaria só ping sem cookie: a página
+     ficaria "conforme" e o dado, inútil — o pior dos dois mundos.
+
+     O listener é DELEGADO no document de propósito: pega os 7 CTAs de hoje e os
+     das páginas que ainda vão nascer, sem tocar em nenhum <a>. ═══════════════ -->
+<script>
+  // Opt-out de verdade: o botão em /privacidade grava esta chave. Precisa vir
+  // ANTES do gtag.js, senão a primeira medição já saiu.
+  try { if (localStorage.getItem('sem-analytics') === '1') window['ga-disable-G-SZNPSY50CR'] = true; } catch (e) {}
+</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-SZNPSY50CR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('consent', 'default', {
+    ad_storage: 'denied', ad_user_data: 'denied', ad_personalization: 'denied',
+    analytics_storage: 'granted'
+  });
+  gtag('js', new Date());
+  gtag('config', 'G-SZNPSY50CR', {
+    allow_google_signals: false,
+    allow_ad_personalization_signals: false
+  });
+  document.addEventListener('click', function (e) {
+    var alvo = e.target;
+    if (!alvo || !alvo.closest) return;
+    var a = alvo.closest('a[href*="wa.me"]');
+    if (!a) return;
+    gtag('event', 'contato_whatsapp', {
+      pagina: location.pathname,
+      cta: a.className || 'sem-classe',
+      // De ONDE veio quem clicou. Medido em 17-18/09/2026: metade das sessoes
+      // deste site vem de chatgpt.com e 5% do Google, mas o lead sai por wa.me e
+      // o clique e o lead nunca se cruzavam. So o HOSTNAME: a URL inteira do
+      // referrer pode carregar termo de busca, que e dado de quem visita.
+      origem: (function () {
+        try { return document.referrer ? new URL(document.referrer).hostname : '(direto)'; }
+        catch (e) { return '(desconhecido)'; }
+      })()
+    });
+  });
+</script>
+
+
 </head>
 <body>
 
@@ -127,11 +181,44 @@
   <h2>Visitantes deste site</h2>
   <p>Esta seção é sobre <strong>quem apenas navega em corpflix.com.br</strong>.</p>
   <ul>
-    <li><strong>Não há analytics, cookie de rastreamento nem pixel de anúncio.</strong> O site não instala nada no seu navegador para medir a sua visita.</li>
-    <li><strong>Não há fonte, script ou imagem de terceiro.</strong> Todo o conteúdo é servido do próprio domínio — nenhum outro servidor recebe o seu IP por causa desta página.</li>
+    <li><strong>Medimos audiência</strong> com o Google Analytics: páginas visitadas, de onde você veio (busca, link, assistente de IA), tipo de aparelho e cidade aproximada. Também registramos quando alguém clica em um botão de WhatsApp, para saber quais páginas geram contato.</li>
+    <li><strong>Não fazemos publicidade com isso.</strong> Os sinais de anúncio do Google chegam desligados neste site: não construímos público de remarketing, não personalizamos anúncio e não cruzamos sua navegação com sua conta Google.</li>
+    <li><strong>Não pedimos, nem guardamos, nada que identifique você</strong> nesta navegação. Nome, e-mail e telefone só existem se você escolher nos escrever no WhatsApp — e aí a conversa é você quem começa.</li>
+    <li><strong>Base legal:</strong> legítimo interesse em entender como as pessoas encontram e usam o site, com a transparência desta seção e o desligamento abaixo.</li>
+    <li><strong>O único terceiro é o Google Analytics.</strong> Fora ele, todo o conteúdo é servido do próprio domínio — nem fonte, nem imagem, nem script de mais ninguém.</li>
     <li><strong>Hospedagem</strong> — as páginas são servidas pelo GitHub Pages, que, como qualquer servidor web, processa o endereço IP da requisição para entregar o conteúdo.</li>
     <li><strong>Clicar no botão de WhatsApp</strong> abre uma conversa com a gente. A partir daí, o que você escrever fica registrado no nosso atendimento — inclusive a mensagem que já vem preenchida, que nos diz de qual página você veio.</li>
   </ul>
+  <p><strong>Não quer ser medido?</strong> O botão abaixo desliga a medição neste navegador, agora,
+  e continua valendo nas próximas visitas.</p>
+  <p>
+    <button type="button" id="btOptOut">Desligar a medição neste navegador</button>
+    <span id="optOutStatus" style="margin-left:10px"></span>
+  </p>
+<script>
+  // `ga-disable-<ID>` é a chave que o próprio gtag.js consulta. Gravar em localStorage faz
+  // valer nas próximas visitas; a leitura acontece ANTES do gtag.js, no topo da página.
+  (function () {
+    var bt = document.getElementById('btOptOut');
+    var st = document.getElementById('optOutStatus');
+    if (!bt) return;
+    function desligado() {
+      try { return localStorage.getItem('sem-analytics') === '1'; } catch (e) { return false; }
+    }
+    function pintar() {
+      if (!desligado()) return;
+      bt.disabled = true;
+      bt.textContent = 'Medição desligada neste navegador';
+      st.textContent = 'ok';
+    }
+    bt.addEventListener('click', function () {
+      try { localStorage.setItem('sem-analytics', '1'); } catch (e) {}
+      window['ga-disable-G-SZNPSY50CR'] = true;
+      pintar();
+    });
+    pintar();
+  })();
+</script>
 
   <h2>Seus direitos</h2>
   <p>Você pode pedir confirmação de tratamento, acesso, correção, anonimização, portabilidade ou eliminação dos seus dados. Sobre o conteúdo exibido numa tela, o pedido é endereçado ao cliente que o enviou; se preferir falar conosco, encaminhamos a ele e apoiamos o atendimento.</p>
