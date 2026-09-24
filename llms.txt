@@ -46,6 +46,7 @@ de papel rasgado, TV que apagou e ninguém percebeu por dias.
 ## Links
 - Site: https://www.corpflix.com.br/
 - Blog: https://blog.corpflix.com.br/
+- Perguntas antes de escolher: https://www.corpflix.com.br/perguntas-antes-de-escolher
 
 ---
 Gerado de `app/services/auto/marcas/corpflix.rb` no repositório do ERP
