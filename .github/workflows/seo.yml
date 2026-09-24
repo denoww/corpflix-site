@@ -39,6 +39,13 @@ concurrency:
 jobs:
   seo:
     runs-on: ubuntu-latest
+    # O SHA de ANTES do push. Dois scripts dependem dele e pelo MESMO motivo:
+    # neste job o `HEAD` já é o commit do push (e, no passo do IndexNow, `HEAD~1`
+    # já é o commit do sitemap feito pelo bot). Sem isto, o `seo.py` acha que uma
+    # página recém-criada é antiga e reprova o 404 de quem ainda não foi publicado,
+    # e o `indexnow.py` não vê página nenhuma para submeter.
+    env:
+      GITHUB_EVENT_BEFORE: ${{ github.event.before }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -82,8 +89,4 @@ jobs:
       - name: Avisar o Bing (IndexNow)
         if: github.event_name != 'pull_request'
         continue-on-error: true
-        # O SHA de ANTES do push: sem ele o script cairia em HEAD~1, que neste ponto é o
-        # commit do sitemap feito pelo bot — e o ping sairia vazio no push que criou a página.
-        env:
-          GITHUB_EVENT_BEFORE: ${{ github.event.before }}
         run: python3 .github/scripts/indexnow.py

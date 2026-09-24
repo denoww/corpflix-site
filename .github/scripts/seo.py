@@ -29,6 +29,7 @@ from __future__ import annotations
 
 import html as H
 import json
+import os
 import re
 import subprocess
 import sys
@@ -280,9 +281,20 @@ def confere_http(urls: list[str]) -> None:
     import urllib.error
     import urllib.request
 
-    anterior = subprocess.run(['git', 'show', 'HEAD:sitemap.xml'], cwd=RAIZ,
-                              capture_output=True, text=True)
-    ja_existiam = set(re.findall(r'<loc>([^<]+)</loc>', anterior.stdout))
+    # ⚠️ ANTES DO PUSH, não `HEAD`. Se o autor regenerou o sitemap e o commitou junto com
+    # a página — que é o que acontece ao rodar este script na mão antes de commitar —, a
+    # URL nova JÁ ESTÁ no `HEAD:sitemap.xml`, a proteção logo abaixo não a reconhece como
+    # nova, e o job reprova exatamente o commit que adiciona a página. Foi o que derrubou
+    # o CI dos 3 sites que ganharam `/perguntas-antes-de-escolher` em 24/09/2026.
+    ja_existiam: set[str] = set()
+    for ref in (os.environ.get('GITHUB_EVENT_BEFORE') or '', 'HEAD~1', 'HEAD'):
+        if not ref or set(ref) == {'0'}:
+            continue
+        anterior = subprocess.run(['git', 'show', f'{ref}:sitemap.xml'], cwd=RAIZ,
+                                  capture_output=True, text=True)
+        if anterior.returncode == 0:
+            ja_existiam = set(re.findall(r'<loc>([^<]+)</loc>', anterior.stdout))
+            break
 
     for u in urls:
         req = urllib.request.Request(u, method='HEAD',
