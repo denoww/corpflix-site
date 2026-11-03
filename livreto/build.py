@@ -27,13 +27,36 @@ CORES (contrato da marca — nomes exatos, não invente token novo):
   --roxo #9100FF é a primária: branco sobre ela dá 5,76:1, pode ser botão.
   --roxo-esc #6A00E0 é o hover e TODO texto pequeno colorido (7,81:1).
   --azul #1886FF só existe DENTRO do --grad. Nunca superfície com texto (3,56:1).
-  Sem Google Fonts e sem analytics: pilha de sistema, nada de terceiro na página.
+  Sem Google Fonts: pilha de sistema. Analytics: só o GA4 do próprio site (ver ga4_do_site),
+  desde 03/11/2026 — o mesmo do index.html, coberto por /privacidade.
 """
 import pathlib, importlib.util, datetime, hashlib, re, sys
 
 ROOT = pathlib.Path(__file__).resolve().parent
 REPO = ROOT.parent
 OUT  = REPO / "livreto" / "index.html"
+
+
+# ── GA4 no livreto (E1 do ROADMAP_growth_marketing.md, repo seucondominio — 03/11/2026)
+# Até aqui o livreto era a única página do site sem medição: quem chegava pelo PDF/QR e
+# chamava no WhatsApp não aparecia em lugar nenhum do GA4. O bloco é COPIADO do
+# index.html do site em tempo de build (fonte única: propriedade, opt-out de
+# /privacidade, consent e o listener de `contato_whatsapp`), em vez de duplicado aqui.
+# ☠️ O CI renderiza o livreto.pdf a partir deste MESMO HTML com Chrome headless: sem a
+# guarda abaixo, todo build contaria uma visita falsa na propriedade da marca.
+def ga4_do_site():
+    import re as _re
+    html = (REPO / "index.html").read_text(encoding="utf-8")
+    m = _re.search(
+        r'<script>\s*// Opt-out.*?</script>\s*'
+        r'<script async src="https://www\.googletagmanager\.com/gtag/js\?id=(G-[A-Z0-9]+)"></script>\s*'
+        r'<script>.*?</script>',
+        html, _re.S)
+    if not m:
+        raise SystemExit("livreto: bloco GA4 não encontrado no index.html — o livreto sairia sem medição")
+    guarda = ("<script>try{if(navigator.webdriver||/HeadlessChrome/.test(navigator.userAgent))"
+              f"window['ga-disable-{m.group(1)}']=true;}}catch(e){{}}</script>\n")
+    return guarda + m.group(0) + "\n"
 
 sp = importlib.util.spec_from_file_location("content", str(ROOT / "content.py"))
 C = importlib.util.module_from_spec(sp); sp.loader.exec_module(C)
@@ -597,7 +620,7 @@ def build():
 </head>
 <body>
 '''
-    doc = head + body + "\n" + SCRIPT + "\n</body>\n</html>\n"
+    doc = head.replace("</head>", ga4_do_site() + "</head>", 1) + body + "\n" + SCRIPT + "\n</body>\n</html>\n"
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(doc)
     print(f"[livreto] {OUT} — {len(doc)//1024} KB · v{hoje} · {sha}")
