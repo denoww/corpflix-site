@@ -585,16 +585,14 @@ def build():
 
     body = nav + "\n" + body_sem_pe + "\n" + contra
 
-    desc = ("Livreto do Corpflix: TV de mídia indoor gerenciada para a sala de espera do comércio, "
-            "o refeitório da empresa e o elevador do condomínio. A gente instala o player, publica "
-            "o que você manda e vigia a tela de longe — com notícias, clima e cotações no intervalo.")
+    desc = "Livreto do Corpflix: TV de mídia indoor para sala de espera, refeitório e elevador. A gente instala o player, publica o que você manda e vigia a tela."
     url = f"{C.SITE}/livreto/"
     head = f'''<!doctype html>
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Livreto do Corpflix — a TV do seu ponto, publicada e monitorada</title>
+<title>Livreto do Corpflix — TV de mídia indoor gerenciada</title>
 <meta name="description" content="{desc}">
 <meta name="robots" content="index,follow,max-image-preview:large">
 <link rel="canonical" href="{url}">
